@@ -18,26 +18,33 @@ func signupHandler(c *gin.Context)  {
     if isNewUser = checkNewUser(request.Mobileno); isNewUser {
       // Check if the user already attempted Registration
       registered, blocked, verified := checkRegistrationExists(request.Mobileno)
-      if !registered && !blocked && !verified{
+      if registered && !blocked && !verified{
         //Checking if the referral Id is valid
         if isValidRefCode = checkReferralID(request.ReferralID); !isValidRefCode {
+          //Update referral_count
+          updateReferralTable(request.ReferralID)
           //Call OTP Server
           fmt.Println("Calling OTP Server")
           if response := callnewOTP(request.Mobileno, "n"); response{
             //Create an Entry in New registrations
             createRegistration(request.Mobileno, request.ClientID, request.ReferralID)
-            c.JSON(200, gin.H{
-              "status" : "success",
-              "is_new_user": true,
-              "is_valid_refcode": true,
-              "otp_generated" : response,
-            })
           }
         }
+        c.JSON(200, gin.H{
+          "status" : "success",
+          "is_new_user": isNewUser,
+          "is_valid_refcode": isValidRefCode,
+          "otp_generated" : response,
+        })
       }else if registered && blocked{
         c.JSON(200, gin.H{
           "status" : "failed",
           "message" : "Mobileno blocked because of unsuccessful verify attempts",
+        })
+      }else if registered && verified{
+        c.JSON(200, gin.H{
+          "status" : "failed",
+          "message" : "Mobile Number already verified"
         })
       }
     }
