@@ -3,7 +3,7 @@ package main
 import (
   "github.com/gin-gonic/gin"
 )
-var mySigningKey = []byte("fabfitsecret")
+
 var fbSecretKey = []byte("4a060ae8248e89896f2999d12a503478")
 
 func main()  {

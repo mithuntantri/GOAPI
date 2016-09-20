@@ -18,8 +18,8 @@ func resendSignupHandler(c *gin.Context)  {
       })
     }else if registered && verified{
       c.JSON(200, gin.H{
-        "status" : "success",
-        "verified" : verified,
+        "status" : "failed",
+        "message" : "Mobile Number already verified",
       })
     }
   }

@@ -5,6 +5,9 @@ import (
   "log"
   "github.com/dgrijalva/jwt-go"
 )
+
+var mySigningKey = []byte("fabfitsecret")
+
 func generateToken(ID, ClientID string, expiry bool) loginTokens{
   token := jwt.New(jwt.SigningMethodHS256)
   if expiry {

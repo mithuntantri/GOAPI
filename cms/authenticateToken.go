@@ -18,8 +18,9 @@ func authenticateToken(ID, tokenString string) (bool, bool) {
     valid := checkTokenExists(id)
     if valid {
       verified := verifyToken(id, tokenString)
-      return false, verified
+      return false, true
     }
+    return false, false
   }
   deleteToken(ID)
   return true, false

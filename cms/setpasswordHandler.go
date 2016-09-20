@@ -16,19 +16,17 @@ func setpaswordHandler(c *gin.Context)  {
       if addtoCredentials(request.Mobileno, request.ClientID, hashedPass){
         logintoken := generateToken(request.Mobileno, request.ClientID, true)
         inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token)
-        if inserr {
-          c.JSON(200, gin.H{
-            "data":map[string]interface{}{
-              "validUser": true,
-              "password_set" :  true,
-              "profile_set" : false,
-              "first_time_login" :  true,
-              "secret":logintoken.Token,
-            },
-            "message":"",
-            "status":"success",
-          })
-        }
+        c.JSON(200, gin.H{
+          "data":map[string]interface{}{
+            "validUser": true,
+            "password_set" :  inserr,
+            "profile_set" : false,
+            "first_time_login" :  true,
+            "secret":logintoken.Token,
+          },
+          "message":"",
+          "status":"success",
+        })
       }
     }else if registered && !verified{
       c.JSON(200, gin.H{
