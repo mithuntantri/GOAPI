@@ -51,6 +51,7 @@ func setprofileHandler(c *gin.Context)  {
 
       //convert string to date
       if createProfile(request, true, referralID, walletID, referredID) {
+        insertEmailMap(request.Mobileno, request.EmailID)
         c.JSON(200, gin.H{
           "status" : "success",
           "first_time_login": false,

@@ -14,6 +14,7 @@ func signupHandler(c *gin.Context)  {
   if c.Bind(&request) == nil {
     isNewUser := false
     isValidRefCode := false
+    response := false
     //Checking if the user already registered
     if isNewUser = checkNewUser(request.Mobileno); isNewUser {
       // Check if the user already attempted Registration
@@ -25,7 +26,7 @@ func signupHandler(c *gin.Context)  {
           updateReferralTable(request.ReferralID)
           //Call OTP Server
           fmt.Println("Calling OTP Server")
-          if response := callnewOTP(request.Mobileno, "n"); response{
+          if response = callnewOTP(request.Mobileno, "n"); response{
             //Create an Entry in New registrations
             createRegistration(request.Mobileno, request.ClientID, request.ReferralID)
           }
@@ -44,7 +45,7 @@ func signupHandler(c *gin.Context)  {
       }else if registered && verified{
         c.JSON(200, gin.H{
           "status" : "failed",
-          "message" : "Mobile Number already verified"
+          "message" : "Mobile Number already verified",
         })
       }
     }

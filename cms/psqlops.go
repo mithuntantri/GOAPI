@@ -70,6 +70,22 @@ func checkCredentials(mobileno, client_id, password string) bool{
     return false
   }
 }
+func verifyMobileno(mobileno, client_id string) (bool, bool){
+  var db_clientid string
+  var count int8
+  db.QueryRow("SELECT COUNT(*) FROM credentials WHERE mobileno=$1",mobileno).Scan(&count)
+  if count == 0{
+    return false, false
+  }
+  err := db.QueryRow("SELECT client_id FROM credentials WHERE mobileno=$1",
+      mobileno).Scan(&db_clientid)
+  checkErr(err)
+  if client_id == db_clientid{
+    return true, true
+  }else{
+    return false , true
+  }
+}
 func createReferralID(referral_id string)  bool{
   var lastInsertId string
   err := db.QueryRow("INSERT INTO referral(referral_id, referral_count) VALUES($1,$2);",
@@ -93,5 +109,55 @@ func createProfile(request profileRequest, verified bool, referral_id, wallet_id
         request.Mobileno, request.EmailID, request.ClientID, request.FirstName, request.LastName, dob, request.Gender, request.Address, request.Street, request.PinCode, verified, referral_id, referred_id, wallet_id).Scan(&lastInsertId)
   checkErr(err)
   fmt.Println("Last inserted id = ", lastInsertId)
+  return true
+}
+func insertEmailMap(mobileno, email_id string) bool{
+  var lastInsertId string
+  err := db.QueryRow("INSERT INTO emailid_map(email_id, mobileno) VALUES($1, $2);", email_id, mobileno).Scan(&lastInsertId)
+  checkErr(err)
+  return true
+}
+func checkIfEmailID(email_id string) bool{
+  var count int8
+  db.QueryRow("SELECT COUNT(*) FROM emailid_map WHERE email_id=$1",email_id).Scan(&count)
+  if count == 0 {
+    return false
+  }else{
+    return true
+  }
+}
+func getMobileNumber(id, table_name, field_name string) string{
+  var mobileno string
+  db.QueryRow("SELECT mobileno FROM $1 WHERE $2=$3",table_name, field_name, id).Scan(&mobileno)
+  return mobileno
+}
+func checkIfUsername(username string) bool{
+  var count int8
+  db.QueryRow("SELECT COUNT(*) FROM username_map WHERE username=$1",username).Scan(&count)
+  if count == 0 {
+    return false
+  }else{
+    return true
+  }
+}
+func checkIfFBID(fb_id string) bool{
+  var count int8
+  db.QueryRow("SELECT COUNT(*) FROM fbid_map WHERE fb_id=$1",fb_id).Scan(&count)
+  if count == 0 {
+    return false
+  }else{
+    return true
+  }
+}
+func insertUsernameMap(mobileno, username string)  bool{
+  var lastInsertId string
+  err := db.QueryRow("INSERT INTO username_map(email_id, mobileno) VALUES($1, $2);", username, mobileno).Scan(&lastInsertId)
+  checkErr(err)
+  return true
+}
+func insertFbIDMap(mobileno, fbid string)  bool{
+  var lastInsertId string
+  err := db.QueryRow("INSERT INTO fbid_map(email_id, mobileno) VALUES($1, $2);", fbid, mobileno).Scan(&lastInsertId)
+  checkErr(err)
   return true
 }

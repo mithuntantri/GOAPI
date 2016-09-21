@@ -17,7 +17,7 @@ func authenticateToken(ID, tokenString string) (bool, bool) {
     id := claims["ID"].(string)
     valid := checkTokenExists(id)
     if valid {
-      verified := verifyToken(id, tokenString)
+      verifyToken(id, tokenString)
       return false, true
     }
     return false, false
