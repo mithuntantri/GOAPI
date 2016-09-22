@@ -43,7 +43,7 @@ func loginHandler(c *gin.Context)  {
       //Credentials Exists with mobileno
       logintoken = generateToken(request.ID, request.ClientID, request.Expiry)
     }
-    isExists := checkTokenExists(logintoken.ID)
+    isExists := checkTokenExists(logintoken.ID, logintoken.ClientID)
     if !isExists {
       inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token)
       if inserr {

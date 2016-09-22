@@ -115,11 +115,19 @@ func createTokenstable() {
   ).Run(session)
   checkErr(err)
 }
-func checkTokenExists(username string) bool{
+func checkTokenExists(id, client_id string) bool{
   fmt.Println("Checking if user already exists")
-  result, _ := r.DB("mithun").Table("loginTokens").Get(username).Run(session)
+  result, _ := r.DB("mithun").Table("loginTokens").Get(id).Run(session)
   if !result.IsNil() {
-    return true
+    var n loginTokens
+    result.One(&n)
+    result.Close()
+    clientid := n.ClientID
+    fmt.Println("checking:", clientid, client_id)
+    if client_id == clientid {
+      fmt.Println("Verified token")
+      return true
+    }
   }
   return false
 }
@@ -134,9 +142,9 @@ func createNewToken(id, client_id, token string) bool{
   checkErr(inserr)
   return true
 }
-func verifyToken(username, tokenString string) bool{
+func verifyToken(id, tokenString string) bool{
   fmt.Println("Verifying Token")
-  curr, _ := r.DB("mithun").Table("loginTokens").Get(username).Run(session)
+  curr, _ := r.DB("mithun").Table("loginTokens").Get(id).Run(session)
   var n loginTokens
   curr.One(&n)
   curr.Close()
@@ -147,9 +155,9 @@ func verifyToken(username, tokenString string) bool{
     return false
   }
 }
-func deleteToken(username string)  {
+func deleteToken(id string)  {
   fmt.Println("Deleting Token")
   r.DB("mithun").Table("loginTokens").Filter(map[string]interface{}{
-    "username": username,
+    "id": id,
   }).Delete().Exec(session)
 }

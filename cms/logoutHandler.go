@@ -6,10 +6,10 @@ import (
 
 func logoutHandler(c *gin.Context)  {
   var json struct {
-    Username string `json:"username"`
+    ID string `json:"mobileno"`
   }
   if c.Bind(&json) == nil{
-    deleteToken(json.Username)
+    deleteToken(json.ID)
     c.JSON(200, gin.H{
       "status":"success",
     })

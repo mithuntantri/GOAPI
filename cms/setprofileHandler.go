@@ -20,7 +20,7 @@ func setprofileHandler(c *gin.Context)  {
   var request profileRequest
   if c.Bind(&request) == nil {
     tokenString := c.Request.Header.Get("X-Authorization-Token")
-    expired, authorized := authenticateToken(request.Mobileno, tokenString)
+    expired, authorized := authenticateToken(request.Mobileno, request.ClientID, tokenString)
     registered, blocked, verified := checkRegistrationExists(request.Mobileno)
     if !expired && authorized && registered && verified{
       //Get Refferred ID
@@ -49,7 +49,7 @@ func setprofileHandler(c *gin.Context)  {
       createWalletID(walletID)
 
       //convert string to date
-      if createProfile(request, true, referralID, walletID, referredID) {
+      if createProfile(request, referralID, walletID, referredID) {
         insertEmailMap(request.Mobileno, request.EmailID)
         c.JSON(200, gin.H{
           "status" : "success",
