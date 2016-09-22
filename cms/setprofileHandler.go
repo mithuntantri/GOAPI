@@ -11,7 +11,6 @@ type profileRequest struct{
   ClientID  string `json:"client_id"`
   FirstName string `json:"first_name"`
   LastName  string `json:"last_name"`
-  Dob       string `json:"dob"`
   Gender    string `json:"gender"`
   Address   string `json:"address"`
   Street    string `json:"street"`

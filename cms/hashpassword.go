@@ -5,6 +5,7 @@ import (
     "io"
     "os"
     "crypto/rand"
+    "encoding/base64"
     "crypto/sha1"
 )
 
@@ -27,6 +28,7 @@ func getHashedPassword(password string) string{
     combination := string(salt) + string(password)
     passwordHash := sha1.New()
     io.WriteString(passwordHash, combination)
-    fmt.Printf("Password Hash : %x \n", passwordHash.Sum(nil))
-    return string(passwordHash.Sum(nil))
+    pass := base64.URLEncoding.EncodeToString(passwordHash.Sum(nil))
+    fmt.Printf(pass)
+    return pass
 }

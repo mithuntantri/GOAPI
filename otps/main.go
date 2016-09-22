@@ -9,7 +9,7 @@ func main()  {
   router.POST("/otp/create", createotpHandler)
   router.POST("/otp/verify", verifyotpHandler)
   router.POST("/otp/resend", resendotpHandler)
-  router.Run(":2000")
+  router.Run(":2222")
 }
 func checkErr(err error) {
     if err != nil {

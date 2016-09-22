@@ -1,10 +1,9 @@
 CREATE TABLE "profile" (
 	"mobileno" varchar(10) NOT NULL,
 	"email_id" varchar(127) NOT NULL,
-	"client_id" int NOT NULL,
+	"client_id" varchar(1) NOT NULL,
 	"first_name" varchar(127) NOT NULL,
 	"last_name" varchar(127) NOT NULL,
-	"dob" DATE NOT NULL,
 	"gender" varchar(1) NOT NULL,
 	"address" varchar(127) NOT NULL,
 	"street" varchar(127) NOT NULL,
@@ -21,7 +20,7 @@ CREATE TABLE "profile" (
 
 
 CREATE TABLE "clients" (
-	"client_id" int NOT NULL,
+	"client_id" varchar(1) NOT NULL,
 	"client_name" varchar(30) NOT NULL,
 	CONSTRAINT clients_pk PRIMARY KEY ("client_id")
 ) WITH (
@@ -44,7 +43,7 @@ CREATE TABLE "wallet" (
 
 CREATE TABLE "credentials" (
 	"mobileno" varchar(10) NOT NULL,
-	"client_id" int NOT NULL,
+	"client_id" varchar(1) NOT NULL,
 	"password" varchar(255) NOT NULL,
 	CONSTRAINT credentials_pk PRIMARY KEY ("mobileno")
 ) WITH (
