@@ -8,8 +8,7 @@ CREATE TABLE "profile" (
 	"address" varchar(127) NOT NULL,
 	"street" varchar(127) NOT NULL,
 	"pin_code" varchar(6) NOT NULL,
-	"verified" BOOLEAN NOT NULL,
-	"refferral_id" varchar(30) NOT NULL,
+	"referral_id" varchar(30) NOT NULL,
 	"referred_id" varchar(20) NOT NULL,
 	"wallet_id" varchar(20) NOT NULL,
 	CONSTRAINT profile_pk PRIMARY KEY ("mobileno")
@@ -53,9 +52,9 @@ CREATE TABLE "credentials" (
 
 
 CREATE TABLE "referral" (
-	"refferral_id" varchar(30) NOT NULL,
+	"referral_id" varchar(30) NOT NULL,
 	"referral_count" int NOT NULL,
-	CONSTRAINT referral_pk PRIMARY KEY ("refferral_id")
+	CONSTRAINT referral_pk PRIMARY KEY ("referral_id")
 ) WITH (
   OIDS=FALSE
 );
@@ -63,9 +62,9 @@ CREATE TABLE "referral" (
 
 
 CREATE TABLE "emailid_map" (
-	"EmailId" varchar(127) NOT NULL,
+	"email_id" varchar(127) NOT NULL,
 	"mobileno" varchar(10) NOT NULL,
-	CONSTRAINT emailid_map_pk PRIMARY KEY ("EmailId")
+	CONSTRAINT emailid_map_pk PRIMARY KEY ("email_id")
 ) WITH (
   OIDS=FALSE
 );
@@ -93,7 +92,7 @@ CREATE TABLE "fbid_map" (
 
 
 ALTER TABLE "profile" ADD CONSTRAINT "profile_fk0" FOREIGN KEY ("client_id") REFERENCES "clients"("client_id");
-ALTER TABLE "profile" ADD CONSTRAINT "profile_fk1" FOREIGN KEY ("refferral_id") REFERENCES "referral"("refferral_id");
+ALTER TABLE "profile" ADD CONSTRAINT "profile_fk1" FOREIGN KEY ("referral_id") REFERENCES "referral"("referral_id");
 ALTER TABLE "profile" ADD CONSTRAINT "profile_fk2" FOREIGN KEY ("wallet_id") REFERENCES "wallet"("wallet_id");
 
 

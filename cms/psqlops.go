@@ -3,7 +3,7 @@ package main
 import (
   "fmt"
   "database/sql"
-  "github.com/metakeule/fmtdate"
+  // "github.com/metakeule/fmtdate"
   _ "github.com/lib/pq"
 )
 var db *sql.DB
@@ -51,11 +51,8 @@ func updateReferralTable(referral_id string) {
 }
 
 func addtoCredentials(mobileno , client_id , password string) bool{
-  var lastInsertId string
   fmt.Println(mobileno, client_id, password)
-  err := db.QueryRow("INSERT INTO credentials (mobileno, client_id, password) VALUES($1,$2,$3);", mobileno, client_id, password).Scan(&lastInsertId)
-  checkErr(err)
-  fmt.Println("last inserted id =", lastInsertId)
+  db.QueryRow("INSERT INTO credentials (mobileno, client_id, password) VALUES($1,$2,$3);", mobileno, client_id, password)
   return true
 }
 func checkCredentials(mobileno, client_id, password string) bool{
@@ -87,33 +84,20 @@ func verifyMobileno(mobileno, client_id string) (bool, bool){
   }
 }
 func createReferralID(referral_id string)  bool{
-  var lastInsertId string
-  err := db.QueryRow("INSERT INTO referral(referral_id, referral_count) VALUES($1,$2);",
-        referral_id, 0).Scan(&lastInsertId)
-        checkErr(err)
-  fmt.Println("last inserted id =", lastInsertId)
+  db.QueryRow("INSERT INTO referral(referral_id, referral_count) VALUES($1,$2);",referral_id, 0)
   return true
 }
 func createWalletID(wallet_id string)  bool{
-  var lastInsertId string
-  err := db.QueryRow("INSERT INTO wallet(wallet_id, referral_credits, profile_credits, promo_credits) VALUES($1,$2,$3,$4);",
-        wallet_id, 0, 0 , 0).Scan(&lastInsertId)
-        checkErr(err)
-  fmt.Println("last inserted id =", lastInsertId)
+  db.QueryRow("INSERT INTO wallet(wallet_id, referral_credits, profile_credits, promo_credits) VALUES($1,$2,$3,$4);", wallet_id, 0, 0 , 0)
   return true
 }
-func createProfile(request profileRequest, verified bool, referral_id, wallet_id, referred_id string)  bool{
-  var lastInsertId string
-  err := db.QueryRow("INSERT INTO profile(mobileno, email_id, client_id, first_name, last_name, gender, address, street, pin_code, verified, refferral_id, referred_id, wallet_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14);",
-        request.Mobileno, request.EmailID, request.ClientID, request.FirstName, request.LastName, request.Gender, request.Address, request.Street, request.PinCode, verified, referral_id, referred_id, wallet_id).Scan(&lastInsertId)
-  checkErr(err)
-  fmt.Println("Last inserted id = ", lastInsertId)
+func createProfile(request profileRequest, referral_id, wallet_id, referred_id string)  bool{
+  db.QueryRow("INSERT INTO profile(mobileno, email_id, client_id, first_name, last_name, gender, address, street, pin_code, referral_id, referred_id, wallet_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);",
+        request.Mobileno, request.EmailID, request.ClientID, request.FirstName, request.LastName, request.Gender, request.Address, request.Street, request.PinCode, referral_id, referred_id, wallet_id)
   return true
 }
 func insertEmailMap(mobileno, email_id string) bool{
-  var lastInsertId string
-  err := db.QueryRow("INSERT INTO emailid_map(email_id, mobileno) VALUES($1, $2);", email_id, mobileno).Scan(&lastInsertId)
-  checkErr(err)
+  db.QueryRow("INSERT INTO emailid_map(email_id, mobileno) VALUES($1, $2);", email_id, mobileno)
   return true
 }
 func checkIfEmailID(email_id string) bool{
