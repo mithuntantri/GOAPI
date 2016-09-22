@@ -5,13 +5,9 @@ import (
 )
 
 func logoutHandler(c *gin.Context)  {
-  var json struct {
-    ID string `json:"mobileno"`
-  }
-  if c.Bind(&json) == nil{
-    deleteToken(json.ID)
-    c.JSON(200, gin.H{
-      "status":"success",
-    })
-  }
+  tokenString := c.Request.Header.Get("X-Authorization-Token")
+  result := deleteauthToken(tokenString)
+  c.JSON(200, gin.H{
+    "status" : result,
+  })
 }

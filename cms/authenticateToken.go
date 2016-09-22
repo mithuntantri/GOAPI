@@ -26,3 +26,23 @@ func authenticateToken(ID, client_id, tokenString string) (bool, bool) {
   deleteToken(ID)
   return true, false
 }
+func deleteauthToken(tokenString string) string{
+  vertoken, err := jwt.Parse(tokenString, func (token *jwt.Token) (interface{}, error)  {
+    if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+       return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+   }
+   return mySigningKey, nil
+  })
+  checkErr(err)
+  if claims, ok := vertoken.Claims.(jwt.MapClaims); ok && vertoken.Valid {
+    id := claims["id"].(string)
+    client_id := claims["client_id"].(string)
+    valid := checkTokenExists(id, client_id)
+    if valid {
+      verifyToken(id, tokenString)
+      deleteToken(id)
+      return "success"
+    }
+  }
+  return "failed"
+}
