@@ -24,10 +24,10 @@ func checkNewUser(mobileno string) bool{
 
 func checkReferralID(referral_id string) bool {
   var count int8
-  db.QueryRow("SELECT COUNT(*) FROM referral WHERE referral_id=$1",referral_id).Scan(&count)
-  if referral_id == "nil"{
+  if referral_id == ""{
     return true
   }
+  db.QueryRow("SELECT COUNT(*) FROM referral WHERE referral_id=$1",referral_id).Scan(&count)
   if count == 0 {
     return false
   }else{
