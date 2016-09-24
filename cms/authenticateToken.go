@@ -4,7 +4,7 @@ import (
   "fmt"
   "github.com/dgrijalva/jwt-go"
 )
-func authenticateToken(ID, client_id, tokenString string) (bool, bool) {
+func authenticateToken(ID, client_id, tokenString string, mobile_device bool) (bool, bool) {
   fmt.Println("auth token",tokenString)
   vertoken, _ := jwt.Parse(tokenString, func (token *jwt.Token) (interface{}, error)  {
     if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -16,17 +16,17 @@ func authenticateToken(ID, client_id, tokenString string) (bool, bool) {
   if claims, ok := vertoken.Claims.(jwt.MapClaims); ok && vertoken.Valid {
     id := claims["id"].(string)
     client_id := claims["client_id"].(string)
-    valid := checkTokenExists(id, client_id)
+    valid := checkTokenExists(id, client_id, mobile_device)
     if valid {
-      verifyToken(id, tokenString)
+      verifyToken(id, tokenString, mobile_device)
       return false, true
     }
     return false, false
   }
-  deleteToken(ID)
+  deleteToken(ID, mobile_device)
   return true, false
 }
-func deleteauthToken(tokenString string) string{
+func deleteauthToken(tokenString string, mobile_device bool) string{
   vertoken, err := jwt.Parse(tokenString, func (token *jwt.Token) (interface{}, error)  {
     if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
        return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -37,10 +37,10 @@ func deleteauthToken(tokenString string) string{
   if claims, ok := vertoken.Claims.(jwt.MapClaims); ok && vertoken.Valid {
     id := claims["id"].(string)
     client_id := claims["client_id"].(string)
-    valid := checkTokenExists(id, client_id)
+    valid := checkTokenExists(id, client_id, mobile_device)
     if valid {
-      verifyToken(id, tokenString)
-      deleteToken(id)
+      verifyToken(id, tokenString, mobile_device)
+      deleteToken(id, mobile_device)
       return "success"
     }
   }

@@ -10,10 +10,14 @@ func loginHandler(c *gin.Context)  {
     ID string `json:"id"`
     Password string `json:"password"`
     ClientID string `json:"client_id"`
-    Device string `json:"device"`
     Expiry bool `json:"set_expiry"`
   }
   if c.Bind(&request) == nil{
+    device := c.Request.Header.Get("Device")
+    mobile_device := false
+    if device == "mobile"{
+      mobile_device = true
+    }
     var mobileno string
     var logintoken loginTokens
     hashedPass := getHashedPassword(request.Password)
@@ -50,9 +54,9 @@ func loginHandler(c *gin.Context)  {
       //Credentials Exists with mobileno
       logintoken = generateToken(request.ID, request.ClientID, request.Expiry)
     }
-    isExists := checkTokenExists(logintoken.ID, logintoken.ClientID)
+    isExists := checkTokenExists(logintoken.ID, logintoken.ClientID, mobile_device)
     if !isExists {
-      inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token)
+      inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token, mobile_device)
       if inserr {
         c.JSON(200, gin.H{
           "data":map[string]interface{}{
@@ -64,13 +68,14 @@ func loginHandler(c *gin.Context)  {
         })
       }
     }else{
+      updateToken(logintoken.ID, logintoken.Token, mobile_device)
       c.JSON(200, gin.H{
         "data":map[string]interface{}{
             "validUser": true,
-            "secret": "",
+            "secret": logintoken.Token,
           },
           "message":"",
-          "status":"failed",
+          "status":"success",
         })
       }
   }

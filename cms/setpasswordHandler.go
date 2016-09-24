@@ -12,13 +12,18 @@ func setpaswordHandler(c *gin.Context)  {
     Password string `json:"password"`
   }
   if c.Bind(&request) == nil {
+    device := c.Request.Header.Get("Device")
+    mobile_device := false
+    if device == "mobile"{
+      mobile_device = true
+    }
     registered, blocked, verified := checkRegistrationExists(request.Mobileno)
     if registered && verified {
       hashedPass := getHashedPassword(request.Password)
       if addtoCredentials(request.Mobileno, request.ClientID, hashedPass){
         logintoken := generateToken(request.Mobileno, request.ClientID, true)
         fmt.Println(logintoken)
-        inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token)
+        inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token, mobile_device)
         fmt.Println(inserr)
         c.JSON(200, gin.H{
           "data":map[string]interface{}{
