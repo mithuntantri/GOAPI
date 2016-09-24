@@ -19,6 +19,7 @@ type loginTokens struct {
   ID string `gorethink:"id, omitempty"`
   ClientID string `gorethink:"client_id"`
   Token string `gorethink:"token"`
+  MobileToken string `gorethink:"mobile_token"`
 }
 func connectDB()  {
   var err error
@@ -115,7 +116,7 @@ func createTokenstable() {
   ).Run(session)
   checkErr(err)
 }
-func checkTokenExists(id, client_id string) bool{
+func checkTokenExists(id, client_id string, mobile_device bool) bool{
   fmt.Println("Checking if user already exists")
   result, _ := r.DB("mithun").Table("loginTokens").Get(id).Run(session)
   if !result.IsNil() {
@@ -125,39 +126,93 @@ func checkTokenExists(id, client_id string) bool{
     clientid := n.ClientID
     fmt.Println("checking:", clientid, client_id)
     if client_id == clientid {
-      fmt.Println("Verified token")
-      return true
+      if (mobile_device && n.MobileToken != "") || (n.Token != ""){
+        fmt.Println("Verified token")
+        return true
+      }
+    }
+  }
+  return false
+}
+func checkTokenEntryExists(id, client_id string, mobile_device bool) bool{
+  fmt.Println("Checking if user already exists")
+  result, _ := r.DB("mithun").Table("loginTokens").Get(id).Run(session)
+  if !result.IsNil() {
+    var n loginTokens
+    result.One(&n)
+    result.Close()
+    clientid := n.ClientID
+    fmt.Println("checking:", clientid, client_id)
+    if client_id == clientid {
+        fmt.Println("Verified token")
+        return true
     }
   }
   return false
 }
 //handles request for new otp
-func createNewToken(id, client_id, token string) bool{
+func createNewToken(id, client_id, token string, mobile_device bool) bool{
   fmt.Println("Creating New Login Token")
+  var mobileToken, webToken string
+  if mobile_device {
+    mobileToken = token
+    webToken = ""
+  }else{
+    mobileToken = ""
+    webToken = token
+  }
+  if checkTokenEntryExists(id,client_id, mobile_device){
+    updateToken(id, token, mobile_device)
+    return true
+  }
   inserr := r.DB("mithun").Table("loginTokens").Insert(loginTokens{
     ID: id,
     ClientID: client_id,
-    Token : token,
+    Token : webToken,
+    MobileToken :  mobileToken,
     }).Exec(session)
-  checkErr(inserr)
+    checkErr(inserr)
   return true
 }
-func verifyToken(id, tokenString string) bool{
+func verifyToken(id, tokenString string, mobile_device bool) bool{
   fmt.Println("Verifying Token")
   curr, _ := r.DB("mithun").Table("loginTokens").Get(id).Run(session)
   var n loginTokens
   curr.One(&n)
   curr.Close()
-  token := n.Token
+  var token string
+  if mobile_device{
+    token = n.MobileToken
+  }else{
+    token = n.Token
+  }
   if token == tokenString{
     return true
   }else{
     return false
   }
 }
-func deleteToken(id string)  {
+func updateToken(id, token string, mobile_device bool) {
+  fmt.Println("Updating Token")
+  if mobile_device{
+    r.DB("mithun").Table("loginTokens").Get(id).Update(map[string]interface{}{
+      "mobile_token" : token,
+    }).Exec(session)
+  }else{
+    r.DB("mithun").Table("loginTokens").Get(id).Update(map[string]interface{}{
+      "token" : token,
+    }).Exec(session)
+  }
+}
+func deleteToken(id string, mobile_device bool)  {
   fmt.Println("Deleting Token")
-  r.DB("mithun").Table("loginTokens").Filter(map[string]interface{}{
-    "id": id,
-  }).Delete().Exec(session)
+  if mobile_device{
+    r.DB("mithun").Table("loginTokens").Get(id).Update(map[string]interface{}{
+      "mobile_token" : "",
+    }).Exec(session)
+  }else{
+    r.DB("mithun").Table("loginTokens").Get(id).Update(map[string]interface{}{
+      "token" : "",
+    }).Exec(session)
+  }
 }
