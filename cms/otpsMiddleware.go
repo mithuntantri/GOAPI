@@ -9,7 +9,7 @@ import (
   "net/http"
 )
 func callnewOTP(mobileno, reqType string) bool{
-    url := "http://127.0.0.1:2222/otp/create"
+    url := "http://127.0.0.1/otp/create"
     request := fmt.Sprintf("{\"mobileno\":\"%s\", \"request_type\":\"%s\"}",
         mobileno, reqType)
 
@@ -34,7 +34,7 @@ func callnewOTP(mobileno, reqType string) bool{
     return response.Status == "success"
 }
 func callverOTP(mobileno, otp, reqType string) (bool,bool){
-  url := "http://127.0.0.1:2222/otp/verify"
+  url := "http://127.0.0.1/otp/verify"
   request := fmt.Sprintf("{\"mobileno\":\"%s\", \"otp\":\"%s\", \"request_type\":\"%s\"}",
       mobileno, otp, reqType)
 
@@ -61,7 +61,7 @@ func callverOTP(mobileno, otp, reqType string) (bool,bool){
   return response.Blocked, response.Verified
 }
 func callresOTP(mobileno, reqType string) (bool){
-  url := "http://127.0.0.1:2222/otp/resend"
+  url := "http://127.0.0.1/otp/resend"
   request := fmt.Sprintf("{\"mobileno\":\"%s\", \"request_type\":\"%s\"}",
       mobileno, reqType)
 

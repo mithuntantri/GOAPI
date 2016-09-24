@@ -37,5 +37,10 @@ func verifySignupHandler(c *gin.Context)  {
         "status": "failed",
         "message": "Mobile Number blocked beacuse of unsuccessful verify attempts",
       })
+    }else if registered && verified{
+      c.JSON(200, gin.H{
+        "status": "failed",
+        "message": "Mobile Number already registered & verified",
+      })
     }
   }

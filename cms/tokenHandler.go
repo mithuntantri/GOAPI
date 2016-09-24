@@ -1,13 +1,14 @@
 package main
 
 import (
+  "fmt"
   "time"
   "log"
   "github.com/dgrijalva/jwt-go"
 )
 
-
 func generateToken(ID, ClientID string, expiry bool) loginTokens{
+  fmt.Println(ID, ClientID, expiry)
   token := jwt.New(jwt.SigningMethodHS256)
   if expiry {
     token.Claims =  jwt.MapClaims{

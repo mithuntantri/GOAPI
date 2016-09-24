@@ -94,7 +94,7 @@ func updateRegistrations(mobileno string, blocked bool, verified bool) bool{
     }
   }
   r.DB("mithun").Table("newRegistrations").Get(mobileno).Update(map[string]interface{}{
-    "blocked": blocked,
+    "is_blocked": blocked,
     "verified": verified,
     }).Exec(session)
   return true

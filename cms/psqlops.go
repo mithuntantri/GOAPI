@@ -2,14 +2,16 @@ package main
 
 import (
   "fmt"
+  "strings"
   "database/sql"
   // "github.com/metakeule/fmtdate"
   _ "github.com/lib/pq"
 )
+
 var db *sql.DB
+
 func connectPSQL() {
     db, _ = sql.Open("postgres", "user=postgres dbname=mithun sslmode=disable password=postgres")
-    // defer db.Close()
 }
 
 func checkNewUser(mobileno string) bool{
@@ -58,9 +60,16 @@ func addtoCredentials(mobileno , client_id , password string) bool{
 func checkCredentials(mobileno, client_id, password string) bool{
   var hashedPass string
   var db_clientid string
+  var count int8
+  db.QueryRow("SELECT COUNT(*) FROM credentials WHERE mobileno=$1", mobileno).Scan(&count)
+  if count == 0{
+    return false
+  }
   err := db.QueryRow("SELECT password, client_id FROM credentials WHERE mobileno=$1",
       mobileno).Scan(&hashedPass, &db_clientid)
   checkErr(err)
+  fmt.Println(client_id, db_clientid)
+  fmt.Println(hashedPass, password)
   if client_id == db_clientid && hashedPass == password{
     return true
   }else{
@@ -109,9 +118,17 @@ func checkIfEmailID(email_id string) bool{
     return true
   }
 }
+func QuoteIdentifier(name string) string {
+    end := strings.IndexRune(name, 0)
+    if end > -1 {
+        name = name[:end]
+    }
+    return `"` + strings.Replace(name, `"`, `""`, -1) + `"`
+}
 func getMobileNumber(id, table_name, field_name string) string{
   var mobileno string
-  db.QueryRow("SELECT mobileno FROM $1 WHERE $2=$3",table_name, field_name, id).Scan(&mobileno)
+  db.QueryRow(fmt.Sprintf("SELECT mobileno FROM %s WHERE %s=$1",
+  QuoteIdentifier(table_name),QuoteIdentifier(field_name)),id).Scan(&mobileno)
   return mobileno
 }
 func checkIfUsername(username string) bool{
