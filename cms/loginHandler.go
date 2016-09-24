@@ -1,6 +1,7 @@
 package main
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
 )
 
@@ -17,13 +18,17 @@ func loginHandler(c *gin.Context)  {
     var logintoken loginTokens
     hashedPass := getHashedPassword(request.Password)
     if !checkCredentials(request.ID, request.ClientID, hashedPass){
+      fmt.Println("User exists")
       if !checkIfEmailID(request.ID){
+        fmt.Println("User with email id exists")
         if !checkIfUsername(request.ID){
+          fmt.Println("User with username id exists")
           if !checkIfFBID(request.ID){
             c.JSON(200, gin.H{
               "status" : "success",
               "valid" : false,
             })
+            return
           }else{
             //Credentials exists with FB ID
             mobileno = getMobileNumber(request.ID, "fbid_map", "fb_id")
@@ -31,12 +36,14 @@ func loginHandler(c *gin.Context)  {
         }else{
           //Credentials Exists with Username
           mobileno = getMobileNumber(request.ID, "username_map", "username")
+          fmt.Println(mobileno)
         }
       }else{
         //Credentials exists with Emailid
         mobileno = getMobileNumber(request.ID, "emailid_map", "email_id")
+        fmt.Println(mobileno)
       }
-      if checkCredentials(request.ID, request.ClientID, hashedPass){
+      if checkCredentials(mobileno, request.ClientID, hashedPass){
         logintoken = generateToken(mobileno, request.ClientID, request.Expiry)
       }
     }else{

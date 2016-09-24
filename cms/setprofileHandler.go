@@ -1,6 +1,7 @@
 package main
 
 import (
+  "fmt"
   "strings"
   "github.com/gin-gonic/gin"
 )
@@ -20,6 +21,14 @@ func setprofileHandler(c *gin.Context)  {
   var request profileRequest
   if c.Bind(&request) == nil {
     tokenString := c.Request.Header.Get("X-Authorization-Token")
+    fmt.Println(tokenString)
+    if tokenString == "" {
+      c.JSON(200, gin.H{
+        "status" : "failed",
+        "message" : "Invalid token",
+      })
+      return
+    }
     expired, authorized := authenticateToken(request.Mobileno, request.ClientID, tokenString)
     registered, blocked, verified := checkRegistrationExists(request.Mobileno)
     if !expired && authorized && registered && verified{
@@ -59,7 +68,7 @@ func setprofileHandler(c *gin.Context)  {
           "verified" : true,
         })
       }
-    }else if registered && !blocked{
+    }else if registered && blocked{
       c.JSON(200, gin.H{
         "status" : "failed",
         "message" : "Mobile Number blocked for unsuccessful verify attempts",
