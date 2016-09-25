@@ -18,8 +18,6 @@ func main()  {
     router.POST("/api/setpassword", setpaswordHandler)
     router.POST("/api/setprofile", setprofileHandler)
     router.POST("/api/login", loginHandler)
-    router.POST("/api/login/otp", loginwithotpHanlder)
-    router.POST("/api/login/facebook", loginwithfbHandler)
     router.DELETE("/api/logout", logoutHandler)
     router.Run(":3000")
 }
