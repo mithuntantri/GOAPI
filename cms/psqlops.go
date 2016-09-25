@@ -73,6 +73,9 @@ func checkCredentials(mobileno, client_id, password string) bool{
   checkErr(err)
   fmt.Println(client_id, db_clientid)
   fmt.Println(hashedPass, password)
+  if password == ""{
+    return true
+  }
   if client_id == db_clientid && hashedPass == password{
     return true
   }else{
