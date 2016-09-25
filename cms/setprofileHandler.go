@@ -31,6 +31,7 @@ func setprofileHandler(c *gin.Context)  {
       c.JSON(200, gin.H{
         "status" : "failed",
         "message" : "Invalid token",
+        "data":map[string]interface{}{},
       })
       return
     }
@@ -68,24 +69,29 @@ func setprofileHandler(c *gin.Context)  {
         updateWallet(walletID, "profile_credits")
         c.JSON(200, gin.H{
           "status" : "success",
-          "first_time_login": false,
-          "password_set" : true,
-          "profile_set" : true,
-          "verified" : true,
+          "message" : "",
+          "data":map[string]interface{}{
+            "first_time_login": false,
+            "password_set" : true,
+            "profile_set" : true,
+            "verified" : true,
+          },
         })
       }
     }else if registered && blocked{
       c.JSON(200, gin.H{
         "status" : "failed",
         "message" : "Mobile Number blocked for unsuccessful verify attempts",
+        "data":map[string]interface{}{},
       })
     }else{
       c.JSON(200, gin.H{
+        "status":"failed",
+        "message" : "",
         "data":map[string]interface{}{
           "expired": expired,
           "authorized": authorized,
         },
-        "status":"failed",
       })
     }
   }

@@ -14,5 +14,7 @@ func logoutHandler(c *gin.Context)  {
   result := deleteauthToken(tokenString, mobile_device)
   c.JSON(200, gin.H{
     "status" : result,
+    "message" : "",
+    "data":map[string]interface{}{},
   })
 }

@@ -14,12 +14,16 @@ func resendSignupHandler(c *gin.Context)  {
       updateRegistrations(request.Mobileno, blocked, false)
       c.JSON(200, gin.H{
         "status" : "success",
-        "blocked" :  blocked,
+        "message" : "",
+        "data" : map[string]interface{}{
+            "blocked" :  blocked,
+        },
       })
     }else if registered && verified{
       c.JSON(200, gin.H{
         "status" : "failed",
         "message" : "Mobile Number already verified",
+        "data" : map[string]interface{}{},
       })
     }
   }

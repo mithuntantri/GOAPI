@@ -23,27 +23,33 @@ func verifySignupHandler(c *gin.Context)  {
         updateWallet(walletID, "referral_credits")
         c.JSON(200, gin.H{
           "status" : "success",
-          "blocked" : blocked,
-          "password_set" : false,
-          "profile_set" : false,
-          "first_time_login" : true,
-          "verified" : verified,
+          "message": "",
+          "data":map[string]interface{}{
+            "blocked" : blocked,
+            "password_set" : false,
+            "profile_set" : false,
+            "first_time_login" : true,
+            "verified" : verified,
+          },
         })
       }
     }else if !registered {
       c.JSON(200, gin.H{
         "status" : "failed",
         "message" : "Mobile Number not requested for OTP",
+        "data":map[string]interface{}{},
       })
     }else if registered && blocked {
       c.JSON(200, gin.H{
         "status": "failed",
         "message": "Mobile Number blocked beacuse of unsuccessful verify attempts",
+        "data":map[string]interface{}{},
       })
     }else if registered && verified{
       c.JSON(200, gin.H{
         "status": "failed",
         "message": "Mobile Number already registered & verified",
+        "data":map[string]interface{}{},
       })
     }
   }

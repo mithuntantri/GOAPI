@@ -39,7 +39,10 @@ func loginHandler(c *gin.Context)  {
           if !isFblogin && request.FBLogin {
             c.JSON(200, gin.H{
               "status" : "success",
-              "valid" : false,
+              "message" : "",
+              "data":map[string]interface{}{
+                "valid" : false,
+              },
             })
             return
           }else if request.FBLogin && isFblogin{
@@ -65,15 +68,21 @@ func loginHandler(c *gin.Context)  {
           blocked := callresOTP(request.ID, "r")
           c.JSON(200, gin.H{
             "status" : "success",
-            "blocked" : blocked,
+            "message" : "",
+            "data":map[string]interface{}{
+              "blocked" : blocked,
+            },
           })
           return
         }
         if response := callnewOTP(request.ID, "n"); response{
           c.JSON(200, gin.H{
             "status" : "success",
-            "validUser" : true,
-            "otp_generated" : true,
+            "message" : "",
+            "data":map[string]interface{}{
+              "validUser" : true,
+              "otp_generated" : true,
+            },
           })
           return
         }
@@ -85,8 +94,11 @@ func loginHandler(c *gin.Context)  {
       }else{
         c.JSON(200, gin.H{
           "status" : "failed",
-          "verified" : verified,
-          "blocked" : blocked,
+          "message" : "",
+          "data":map[string]interface{}{
+            "verified" : verified,
+            "blocked" : blocked,
+          },
         })
         return
       }
@@ -98,23 +110,23 @@ func loginHandler(c *gin.Context)  {
       inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token, mobile_device)
       if inserr {
         c.JSON(200, gin.H{
+          "status":"success",
+          "message":"",
           "data":map[string]interface{}{
               "validUser": true,
               "secret":logintoken.Token,
           },
-          "message":"",
-          "status":"success",
         })
       }
     }else{
       updateToken(logintoken.ID, logintoken.Token, mobile_device)
       c.JSON(200, gin.H{
+        "status":"success",
+        "message":"",
         "data":map[string]interface{}{
             "validUser": true,
             "secret": logintoken.Token,
           },
-          "message":"",
-          "status":"success",
         })
       }
   }

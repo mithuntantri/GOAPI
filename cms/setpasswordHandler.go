@@ -26,6 +26,8 @@ func setpaswordHandler(c *gin.Context)  {
         inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token, mobile_device)
         fmt.Println(inserr)
         c.JSON(200, gin.H{
+          "status":"success",
+          "message":"",
           "data":map[string]interface{}{
             "validUser": true,
             "password_set" :  inserr,
@@ -33,24 +35,25 @@ func setpaswordHandler(c *gin.Context)  {
             "first_time_login" :  true,
             "secret":logintoken.Token,
           },
-          "message":"",
-          "status":"success",
         })
       }
     }else if registered && !verified{
       c.JSON(200, gin.H{
         "status" : "failed",
         "message" : "Mobile Number not verified",
+        "data":map[string]interface{}{},
       })
     }else if registered && blocked{
       c.JSON(200, gin.H{
         "status" : "failed",
         "message" : "Mobile Number blocked for unsuccesfull verify attempts",
+        "data":map[string]interface{}{},
       })
     }else{
       c.JSON(200, gin.H{
         "status" : "failed",
         "message" : "Mobile Number not registered",
+        "data":map[string]interface{}{},
       })
     }
   }

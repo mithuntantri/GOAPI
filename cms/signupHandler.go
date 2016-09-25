@@ -34,29 +34,37 @@ func signupHandler(c *gin.Context)  {
         }
         c.JSON(200, gin.H{
           "status" : "success",
-          "is_new_user": isNewUser,
-          "is_valid_refcode": isValidRefCode,
-          "otp_generated" : response,
+          "message": "",
+          "data":map[string]interface{}{
+            "is_new_user": isNewUser,
+            "is_valid_refcode": isValidRefCode,
+            "otp_generated" : response,
+          },
         })
       }else if registered && blocked{
         fmt.Println("blocked",registered, blocked, verified)
         c.JSON(200, gin.H{
           "status" : "failed",
           "message" : "Mobileno blocked because of unsuccessful verify attempts",
+          "data":map[string]interface{}{},
         })
       }else if registered && verified{
         fmt.Println("verified",registered, blocked, verified)
         c.JSON(200, gin.H{
           "status" : "failed",
           "message" : "Mobile Number already verified",
+          "data":map[string]interface{}{},
         })
       }
     }else{
       c.JSON(200, gin.H{
         "status" : "success",
-        "is_new_user": isNewUser,
-        "is_valid_refcode" : isValidRefCode,
-        "otp_generated" : false,
+        "message": "",
+        "data":map[string]interface{}{
+          "is_new_user": isNewUser,
+          "is_valid_refcode" : isValidRefCode,
+          "otp_generated" : false,
+        },
       })
     }
   }
