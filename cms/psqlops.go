@@ -45,11 +45,14 @@ func checkWalletID(wallet_id string) bool {
     return true
   }
 }
-func updateReferralTable(referral_id string) {
+func updateReferralTable(referral_id string) string{
   var count int8
   db.QueryRow("SELECT referral_count FROM referral WHERE referral_id=$1",referral_id).Scan(&count)
   count++
   db.QueryRow("UPDATE referral SET referral_count=$1 where referral_id=$2", count, referral_id)
+  var wallet_id string
+  db.QueryRow("SELECT wallet_id FROM referral WHERE referral_id=$1",referral_id).Scan(&wallet_id)
+  return wallet_id
 }
 
 func addtoCredentials(mobileno , client_id , password string) bool{
@@ -92,8 +95,9 @@ func verifyMobileno(mobileno, client_id string) (bool, bool){
     return false , true
   }
 }
-func createReferralID(referral_id string)  bool{
-  db.QueryRow("INSERT INTO referral(referral_id, referral_count) VALUES($1,$2);",referral_id, 0)
+func createReferralID(referral_id, wallet_id string)  bool{
+  fmt.Println("Creating ReferralID",referral_id, wallet_id)
+  db.QueryRow("INSERT INTO referral(referral_id, referral_count, wallet_id) VALUES($1,$2,$3);",referral_id, 0, wallet_id)
   return true
 }
 func createWalletID(wallet_id string)  bool{
@@ -159,5 +163,12 @@ func insertFbIDMap(mobileno, fbid string)  bool{
   var lastInsertId string
   err := db.QueryRow("INSERT INTO fbid_map(email_id, mobileno) VALUES($1, $2);", fbid, mobileno).Scan(&lastInsertId)
   checkErr(err)
+  return true
+}
+func updateWallet(wallet_id, field_name string)  bool{
+  var count int
+  db.QueryRow(fmt.Sprintf("SELECT %s FROM wallet WHERE wallet_id=$1",QuoteIdentifier(field_name)),wallet_id).Scan(&count)
+  count = count + 100
+  db.QueryRow(fmt.Sprintf("UPDATE wallet SET %s=$1 where wallet_id=$2",QuoteIdentifier(field_name)), count, wallet_id)
   return true
 }

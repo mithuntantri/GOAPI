@@ -25,7 +25,6 @@ func signupHandler(c *gin.Context)  {
         //Checking if the referral Id is valid
         if isValidRefCode = checkReferralID(request.ReferralID); isValidRefCode {
           //Update referral_count
-          updateReferralTable(request.ReferralID)
           //Call OTP Server
           fmt.Println("Calling OTP Server")
           if response = callnewOTP(request.Mobileno, "n"); response{

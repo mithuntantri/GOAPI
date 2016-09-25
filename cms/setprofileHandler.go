@@ -49,7 +49,6 @@ func setprofileHandler(c *gin.Context)  {
         part2, _ =Generate(`[a-Z]{6}`)
         referralID = part1 + part2
       }
-      createReferralID(referralID)
 
       //Generate a Wallet ID
       first = strings.SplitN(request.Mobileno,"", 5)
@@ -61,10 +60,12 @@ func setprofileHandler(c *gin.Context)  {
         walletID = part1 + part2
       }
       createWalletID(walletID)
+      createReferralID(referralID, walletID)
 
       //convert string to date
       if createProfile(request, referralID, walletID, referredID) {
         insertEmailMap(request.Mobileno, request.EmailID)
+        updateWallet(walletID, "profile_credits")
         c.JSON(200, gin.H{
           "status" : "success",
           "first_time_login": false,

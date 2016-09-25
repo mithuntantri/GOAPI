@@ -54,6 +54,7 @@ CREATE TABLE "credentials" (
 CREATE TABLE "referral" (
 	"referral_id" varchar(30) NOT NULL,
 	"referral_count" int NOT NULL,
+	"wallet_id" varchar(20) NOT NULL,
 	CONSTRAINT referral_pk PRIMARY KEY ("referral_id")
 ) WITH (
   OIDS=FALSE
@@ -99,6 +100,7 @@ ALTER TABLE "profile" ADD CONSTRAINT "profile_fk2" FOREIGN KEY ("wallet_id") REF
 
 ALTER TABLE "credentials" ADD CONSTRAINT "credentials_fk0" FOREIGN KEY ("client_id") REFERENCES "clients"("client_id");
 
+ALTER TABLE "referral" ADD CONSTRAINT "referral_fk0" FOREIGN KEY ("wallet_id") REFERENCES "wallet"("wallet_id");
 
 ALTER TABLE "emailid_map" ADD CONSTRAINT "emailid_map_fk0" FOREIGN KEY ("mobileno") REFERENCES "credentials"("mobileno");
 

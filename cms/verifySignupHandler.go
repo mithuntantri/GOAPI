@@ -18,6 +18,9 @@ func verifySignupHandler(c *gin.Context)  {
       blocked, verified = callverOTP(request.Mobileno, request.Otp, "v")
         //Update Registrations
         updateRegistrations(request.Mobileno, blocked, verified)
+        referralID := getReferredID(request.Mobileno)
+        walletID := updateReferralTable(referralID)
+        updateWallet(walletID, "referral_credits")
         c.JSON(200, gin.H{
           "status" : "success",
           "blocked" : blocked,
