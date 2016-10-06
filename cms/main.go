@@ -19,7 +19,11 @@ func main()  {
     router.POST("/api/setprofile", setprofileHandler)
     router.POST("/api/login", loginHandler)
     router.DELETE("/api/logout", logoutHandler)
-    router.Run(":3000")
+    router.POST("/api/admin/add", adminAddHandler)
+    router.POST("/api/measurements", updateMeasurementsHandler)
+    router.GET("/api/measurements", getMeasurementsHandler)
+    router.GET("/api/profile", getProfileHandler)
+    router.Run(":3333")
 }
 func checkErr(err error) {
     if err != nil {

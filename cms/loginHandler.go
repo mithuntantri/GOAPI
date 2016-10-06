@@ -29,6 +29,7 @@ func loginHandler(c *gin.Context)  {
       hashedPass = getHashedPassword(request.Password)
     }
     credentialsExist := checkCredentials(request.ID, request.ClientID, hashedPass)
+    fmt.Println(credentialsExist, request.ID, request.ClientID, hashedPass)
     if !credentialsExist && !request.OtpLogin{
       fmt.Println("User exists")
       if !checkIfEmailID(request.ID){
@@ -61,6 +62,7 @@ func loginHandler(c *gin.Context)  {
       }
       if checkCredentials(mobileno, request.ClientID, hashedPass){
         logintoken = generateToken(mobileno, request.ClientID, request.Expiry)
+        fmt.Println(logintoken.Token)
       }
     }else if credentialsExist && request.OtpLogin && request.Otp == ""{
       //Generate Otp for mobileno or resend otp
@@ -108,7 +110,16 @@ func loginHandler(c *gin.Context)  {
     isExists := checkTokenExists(logintoken.ID, logintoken.ClientID, mobile_device)
     if !isExists {
       inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token, mobile_device)
-      if inserr {
+      if logintoken.Token == ""{
+        c.JSON(200, gin.H{
+          "status":"failed",
+          "message":"Failed to generate Login token",
+          "data":map[string]interface{}{
+              "validUser": true,
+              "secret":logintoken.Token,
+          },
+        })
+      }else if inserr {
         c.JSON(200, gin.H{
           "status":"success",
           "message":"",

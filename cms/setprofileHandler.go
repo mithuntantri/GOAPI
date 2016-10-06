@@ -28,7 +28,7 @@ func setprofileHandler(c *gin.Context)  {
     }
     fmt.Println(tokenString)
     if tokenString == "" {
-      c.JSON(200, gin.H{
+      c.JSON(401, gin.H{
         "status" : "failed",
         "message" : "Invalid token",
         "data":map[string]interface{}{},

@@ -5,3 +5,4 @@ DELETE FROM profile;
 DELETE FROM referral;
 DELETE FROM wallet;
 DELETE FROM credentials;
+DELETE FROM measurements;

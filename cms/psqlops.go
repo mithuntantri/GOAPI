@@ -107,12 +107,28 @@ func createWalletID(wallet_id string)  bool{
   db.QueryRow("INSERT INTO wallet(wallet_id, referral_credits, profile_credits, promo_credits) VALUES($1,$2,$3,$4);", wallet_id, 0, 0 , 0)
   return true
 }
+func getWallet(wallet_id string) (int, int, int){
+  var referral_credits int
+  var profile_credits int
+  var promo_credits int
+  db.QueryRow("SELECT referral_credits, profile_credits, promo_credits FROM wallet WHERE wallet_id=$1", wallet_id).Scan(&referral_credits, &profile_credits, &promo_credits)
+  return referral_credits, profile_credits, promo_credits
+
+}
 func createProfile(request profileRequest, referral_id, wallet_id, referred_id string)  bool{
   db.QueryRow("INSERT INTO profile(mobileno, email_id, client_id, first_name, last_name, gender, address, street, pin_code, referral_id, referred_id, wallet_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);",
         request.Mobileno, request.EmailID, request.ClientID, request.FirstName, request.LastName, request.Gender, request.Address, request.Street, request.PinCode, referral_id, referred_id, wallet_id)
   return true
 }
+func getProfile(mobileno string) (profileRequest, string, string){
+  var profile profileRequest
+  var referral_id string
+  var wallet_id string
+  db.QueryRow("SELECT mobileno, email_id, client_id, first_name, last_name, gender, address, street, pin_code, referral_id, wallet_id FROM profile WHERE mobileno=$1",mobileno).Scan(&profile.Mobileno, &profile.EmailID, &profile.ClientID, &profile.FirstName, &profile.LastName, &profile.Gender, &profile.Address, &profile.Street, &profile.PinCode, &referral_id, &wallet_id)
+  return profile, referral_id, wallet_id
+}
 func insertEmailMap(mobileno, email_id string) bool{
+  fmt.Println("Creating Email Map", mobileno, email_id)
   db.QueryRow("INSERT INTO emailid_map(email_id, mobileno) VALUES($1, $2);", email_id, mobileno)
   return true
 }
