@@ -14,6 +14,7 @@ func connectPSQL() {
 }
 
 func checkNewUser(mobileno string) bool{
+  fmt.Println("Checking if New user :", mobileno)
   var count int8
   db.QueryRow("SELECT COUNT(*) FROM credentials WHERE mobileno=$1",mobileno).Scan(&count)
   if count == 0 {
@@ -24,6 +25,7 @@ func checkNewUser(mobileno string) bool{
 }
 
 func checkReferralID(referral_id string) bool {
+  fmt.Println("Checking for valid referral_id:", referral_id)
   var count int8
   if referral_id == ""{
     return true
@@ -36,8 +38,19 @@ func checkReferralID(referral_id string) bool {
   }
 }
 func checkWalletID(wallet_id string) bool {
+  fmt.Println("Checking for valid wallet id:", wallet_id)
   var count int8
   db.QueryRow("SELECT COUNT(*) FROM wallet WHERE wallet_id=$1",wallet_id).Scan(&count)
+  if count == 0 {
+    return false
+  }else{
+    return true
+  }
+}
+func checkMeasurementID(measurement_id string) bool {
+  fmt.Println("Checking for valid measurements id", measurement_id)
+  var count int8
+  db.QueryRow("SELECT COUNT(*) FROM measurements WHERE measurement_id=$1",measurement_id).Scan(&count)
   if count == 0 {
     return false
   }else{
@@ -55,7 +68,7 @@ func updateReferralTable(referral_id string) string{
 }
 
 func addtoCredentials(mobileno , client_id , password string) bool{
-  fmt.Println(mobileno, client_id, password)
+  fmt.Println("Adding to Credentials", mobileno, client_id, password)
   db.QueryRow("INSERT INTO credentials (mobileno, client_id, password) VALUES($1,$2,$3);", mobileno, client_id, password)
   return true
 }
@@ -107,17 +120,31 @@ func createWalletID(wallet_id string)  bool{
   db.QueryRow("INSERT INTO wallet(wallet_id, referral_credits, profile_credits, promo_credits) VALUES($1,$2,$3,$4);", wallet_id, 0, 0 , 0)
   return true
 }
+func createMeasurementsID(measurement_id string)  bool{
+  db.QueryRow("INSERT INTO measurements(measurement_id, units, neck, chest, waist, hip, length, shoulder, sleeve) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9);", measurement_id, 0, 0 , 0, 0, 0, 0, 0, 0)
+  return true
+}
 func getWallet(wallet_id string) (int, int, int){
   var referral_credits int
   var profile_credits int
   var promo_credits int
   db.QueryRow("SELECT referral_credits, profile_credits, promo_credits FROM wallet WHERE wallet_id=$1", wallet_id).Scan(&referral_credits, &profile_credits, &promo_credits)
   return referral_credits, profile_credits, promo_credits
-
 }
-func createProfile(request profileRequest, referral_id, wallet_id, referred_id string)  bool{
-  db.QueryRow("INSERT INTO profile(mobileno, email_id, client_id, first_name, last_name, gender, address, street, pin_code, referral_id, referred_id, wallet_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);",
-        request.Mobileno, request.EmailID, request.ClientID, request.FirstName, request.LastName, request.Gender, request.Address, request.Street, request.PinCode, referral_id, referred_id, wallet_id)
+func getMeasurementsID(mobileno string) string{
+  var measurement_id string
+  db.QueryRow("SELECT measurement_id FROM profile WHERE mobileno=$1", mobileno).Scan(&measurement_id)
+  return measurement_id
+}
+func getMeasurements(measurement_id string) measurements{
+  var m measurements
+  db.QueryRow("SELECT measurement_id, units, neck, chest, waist, hip, length, shoulder, sleeve FROM measurements WHERE measurement_id=$1",measurement_id).Scan(&m.MeasurementID, &m.Units, &m.Neck, &m.Chest, &m.Waist, &m.Hip, &m.Length, &m.Shoulder, &m.Sleeve)
+  return m
+}
+func createProfile(request profileRequest, referral_id, wallet_id, referred_id, measurement_id string)  bool{
+  fmt.Println("Creating Profile : ", referral_id, wallet_id, referral_id, measurement_id)
+  db.QueryRow("INSERT INTO profile(mobileno, email_id, client_id, first_name, last_name, gender, address, street, pin_code, referral_id, referred_id, wallet_id, measurement_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);",
+        request.Mobileno, request.EmailID, request.ClientID, request.FirstName, request.LastName, request.Gender, request.Address, request.Street, request.PinCode, referral_id, referred_id, wallet_id, measurement_id)
   return true
 }
 func getProfile(mobileno string) (profileRequest, string, string){
