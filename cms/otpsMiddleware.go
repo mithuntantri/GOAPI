@@ -30,7 +30,6 @@ func callnewOTP(mobileno, reqType string) bool{
     }
     body, _ := ioutil.ReadAll(resp.Body)
     json.Unmarshal([]byte(string(body)), &response)
-    fmt.Println(reflect.TypeOf(response), response)
     return response.Status == "success"
 }
 func callverOTP(mobileno, otp, reqType string) (bool,bool){
@@ -57,7 +56,6 @@ func callverOTP(mobileno, otp, reqType string) (bool,bool){
   }
   body, _ := ioutil.ReadAll(resp.Body)
   json.Unmarshal([]byte(string(body)), &response)
-  fmt.Println(reflect.TypeOf(response), response)
   return response.Blocked, response.Verified
 }
 func callresOTP(mobileno, reqType string) (bool){
@@ -83,6 +81,5 @@ func callresOTP(mobileno, reqType string) (bool){
   }
   body, _ := ioutil.ReadAll(resp.Body)
   json.Unmarshal([]byte(string(body)), &response)
-  fmt.Println(reflect.TypeOf(response), response)
   return response.Blocked
 }

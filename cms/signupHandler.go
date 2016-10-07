@@ -1,7 +1,6 @@
 package main
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
 )
 
@@ -19,14 +18,11 @@ func signupHandler(c *gin.Context)  {
     if isNewUser = checkNewUser(request.Mobileno); isNewUser {
       // Check if the user already attempted Registration
       registered, blocked, verified := checkRegistrationExists(request.Mobileno)
-      fmt.Println("new",registered, blocked, verified)
       if !blocked && !verified{
-        fmt.Println("new",registered, blocked, verified)
         //Checking if the referral Id is valid
         if isValidRefCode = checkReferralID(request.ReferralID); isValidRefCode {
           //Update referral_count
           //Call OTP Server
-          fmt.Println("Calling OTP Server")
           if response = callnewOTP(request.Mobileno, "n"); response{
             //Create an Entry in New registrations
             createRegistration(request.Mobileno, request.ClientID, request.ReferralID)
@@ -42,14 +38,12 @@ func signupHandler(c *gin.Context)  {
           },
         })
       }else if registered && blocked{
-        fmt.Println("blocked",registered, blocked, verified)
         c.JSON(200, gin.H{
           "status" : "failed",
           "message" : "Mobileno blocked because of unsuccessful verify attempts",
           "data":map[string]interface{}{},
         })
       }else if registered && verified{
-        fmt.Println("verified",registered, blocked, verified)
         c.JSON(200, gin.H{
           "status" : "failed",
           "message" : "Mobile Number already verified",

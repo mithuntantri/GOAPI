@@ -1,8 +1,6 @@
 package main
 
 import (
-  "fmt"
-  // "reflect"
   "github.com/gin-gonic/gin"
 )
 func setpaswordHandler(c *gin.Context)  {
@@ -19,12 +17,10 @@ func setpaswordHandler(c *gin.Context)  {
     }
     registered, blocked, verified := checkRegistrationExists(request.Mobileno)
     if registered && verified {
-      hashedPass := getHashedPassword(request.Password)
+      hashedPass := bcryptPassword(request.Password)
       if addtoCredentials(request.Mobileno, request.ClientID, hashedPass){
         logintoken := generateToken(request.Mobileno, request.ClientID, true)
-        fmt.Println(logintoken)
         inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token, mobile_device)
-        fmt.Println(inserr)
         c.JSON(200, gin.H{
           "status":"success",
           "message":"",

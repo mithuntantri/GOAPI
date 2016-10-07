@@ -41,6 +41,7 @@ func createDB()  {
   checkErr(err)
   createRegistrationstable()
   createTokenstable()
+  createSalttable()
 }
 func createRegistrationstable() {
   fmt.Println("Creating the newRegistrations table")
@@ -48,6 +49,15 @@ func createRegistrationstable() {
     r.DB("mithun").TableList().Contains("newRegistrations"),
     nil,
     r.DB("mithun").TableCreate("newRegistrations"),
+  ).Run(session)
+  checkErr(err)
+}
+func createSalttable() {
+  fmt.Println("Creating the salt table")
+  _, err := r.Branch(
+    r.DB("mithun").TableList().Contains("newSalts"),
+    nil,
+    r.DB("mithun").TableCreate("newSalts"),
   ).Run(session)
   checkErr(err)
 }
@@ -149,6 +159,34 @@ func checkTokenEntryExists(id, client_id string, mobile_device bool) bool{
     }
   }
   return false
+}
+func checkSaltExists(id string) bool{
+  fmt.Println("Checking if salt already exists")
+  result, _ := r.DB("mithun").Table("newSalts").Get(id).Run(session)
+  if !result.IsNil() {
+    return true
+  }
+  return false
+}
+func createApplicationSalt(id, salt string) bool{
+  fmt.Println("Creating New Salt Token")
+  if checkSaltExists(id){
+    return false
+  }
+  inserr := r.DB("mithun").Table("newSalts").Insert(map[string]interface{}{
+    "id": id,
+    "salt": salt,
+    }).Exec(session)
+    checkErr(inserr)
+  return true
+}
+func getApplicationSalt(id string)  string{
+  fmt.Println("Verifying Token")
+  curr, _ := r.DB("mithun").Table("newSalts").Get(id).Run(session)
+  var n loginTokens
+  curr.One(&n)
+  curr.Close()
+  return n.Token
 }
 //handles request for new otp
 func createNewToken(id, client_id, token string, mobile_device bool) bool{

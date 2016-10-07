@@ -4,7 +4,6 @@ import (
   "fmt"
   "strings"
   "database/sql"
-  // "github.com/metakeule/fmtdate"
   _ "github.com/lib/pq"
 )
 
@@ -73,10 +72,11 @@ func checkCredentials(mobileno, client_id, password string) bool{
   checkErr(err)
   fmt.Println(client_id, db_clientid)
   fmt.Println(hashedPass, password)
+  password_verified := verifyBcrypt(hashedPass, password)
   if password == ""{
     return true
   }
-  if client_id == db_clientid && hashedPass == password{
+  if client_id == db_clientid && password_verified{
     return true
   }else{
     return false

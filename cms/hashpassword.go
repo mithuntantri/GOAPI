@@ -2,28 +2,22 @@ package main
 
 import (
     "fmt"
-    "io"
-    "encoding/base64"
-    "crypto/sha1"
+    "golang.org/x/crypto/bcrypt"
 )
 
-const saltSize = 16
-
-func generateSalt(secret []byte) []byte {
-    buf := make([]byte, saltSize, saltSize+sha1.Size)
-    hash := sha1.New()
-    hash.Write(buf)
-    hash.Write(secret)
-    return hash.Sum(buf)
+func bcryptPassword(password string) string{
+  hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+  if err != nil {
+        panic(err)
+    }
+  fmt.Println("Bcrypt Password", string(hashedPassword))
+  return string(hashedPassword)
 }
-func getHashedPassword(password string) string{
-    salt := generateSalt([]byte(password))
-    fmt.Println("salt",salt)
-    fmt.Println("salt",password)
-    combination := string(salt) + string(password)
-    passwordHash := sha1.New()
-    io.WriteString(passwordHash, combination)
-    pass := base64.URLEncoding.EncodeToString(passwordHash.Sum(nil))
-    fmt.Printf(pass)
-    return pass
+
+func verifyBcrypt(db_password, password string) bool{
+  err := bcrypt.CompareHashAndPassword([]byte(db_password), []byte(password))
+  if err != nil{
+    return false
   }
+  return true
+}

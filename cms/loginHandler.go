@@ -1,7 +1,6 @@
 package main
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
 )
 
@@ -23,19 +22,15 @@ func loginHandler(c *gin.Context)  {
       mobile_device = true
     }
     var mobileno string
-    var hashedPass string
+    // var hashedPass string
     var logintoken loginTokens
     if request.Password != ""{
-      hashedPass = getHashedPassword(request.Password)
+      // hashedPass = getHashedPassword(request.ID, request.Password)
     }
-    credentialsExist := checkCredentials(request.ID, request.ClientID, hashedPass)
-    fmt.Println(credentialsExist, request.ID, request.ClientID, hashedPass)
+    credentialsExist := checkCredentials(request.ID, request.ClientID, request.Password)
     if !credentialsExist && !request.OtpLogin{
-      fmt.Println("User exists")
       if !checkIfEmailID(request.ID){
-        fmt.Println("User with email id exists")
         if !checkIfUsername(request.ID){
-          fmt.Println("User with username id exists")
           isFblogin := !checkIfFBID(request.ID)
           if !isFblogin && request.FBLogin {
             c.JSON(200, gin.H{
@@ -53,16 +48,13 @@ func loginHandler(c *gin.Context)  {
         }else{
           //Credentials Exists with Username
           mobileno = getMobileNumber(request.ID, "username_map", "username")
-          fmt.Println(mobileno)
         }
       }else{
         //Credentials exists with Emailid
         mobileno = getMobileNumber(request.ID, "emailid_map", "email_id")
-        fmt.Println(mobileno)
       }
-      if checkCredentials(mobileno, request.ClientID, hashedPass){
+      if checkCredentials(mobileno, request.ClientID, request.Password){
         logintoken = generateToken(mobileno, request.ClientID, request.Expiry)
-        fmt.Println(logintoken.Token)
       }
     }else if credentialsExist && request.OtpLogin && request.Otp == ""{
       //Generate Otp for mobileno or resend otp

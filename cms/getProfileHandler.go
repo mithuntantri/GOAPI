@@ -1,7 +1,6 @@
 package main
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
 )
 
@@ -12,14 +11,12 @@ func getProfileHandler(c *gin.Context)  {
   }
 
   if c.Bind(&request) == nil {
-    fmt.Println(request.Mobileno, request.ClientID)
     tokenString := c.Request.Header.Get("X-Authorization-Token")
     device := c.Request.Header.Get("Device")
     mobile_device := false
     if device == "mobile"{
       mobile_device = true
     }
-    fmt.Println(tokenString)
     if tokenString == "" {
       c.JSON(401, gin.H{
         "status" : "error",

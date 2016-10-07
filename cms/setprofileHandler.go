@@ -1,7 +1,6 @@
 package main
 
 import (
-  "fmt"
   "strings"
   "github.com/gin-gonic/gin"
 )
@@ -26,7 +25,6 @@ func setprofileHandler(c *gin.Context)  {
     if device == "mobile"{
       mobile_device = true
     }
-    fmt.Println(tokenString)
     if tokenString == "" {
       c.JSON(401, gin.H{
         "status" : "failed",
