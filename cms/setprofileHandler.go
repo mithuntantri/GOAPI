@@ -58,11 +58,23 @@ func setprofileHandler(c *gin.Context)  {
         part2, _ =Generate(`[a-Z]{6}`)
         walletID = part1 + part2
       }
+
+      //Generate a Measurement ID
+      first = strings.SplitN(request.Mobileno,"", 5)
+      part1 = strings.ToUpper(first[0] + first[1] + first[2] + first[3])
+      part2, _ = Generate(`[a-Z]{6}`)
+      measurementID := part1 + part2
+      if checkMeasurementID(walletID) {
+        part2, _ =Generate(`[a-Z]{6}`)
+        measurementID = part1 + part2
+      }
+
       createWalletID(walletID)
       createReferralID(referralID, walletID)
+      createMeasurementsID(measurementID)
 
       //convert string to date
-      if createProfile(request, referralID, walletID, referredID) {
+      if createProfile(request, referralID, walletID, referredID, measurementID) {
         insertEmailMap(request.Mobileno, request.EmailID)
         updateWallet(walletID, "profile_credits")
         c.JSON(200, gin.H{
