@@ -11,10 +11,22 @@ func logoutHandler(c *gin.Context)  {
   if device == "mobile"{
     mobile_device = true
   }
-  result := deleteauthToken(tokenString, mobile_device)
-  c.JSON(200, gin.H{
-    "status" : result,
-    "message" : "",
-    "data":map[string]interface{}{},
-  })
+  if tokenString == "" {
+    c.JSON(401, gin.H{
+      "status" : "failed",
+      "message" : "Request Unauthorized",
+    })
+    return
+  }
+    result := deleteauthToken(tokenString, mobile_device)
+    var message string
+    if result == "success"{
+      message = "Logged Out Successfully"
+    }else{
+      message = "Request failed"
+    }
+    c.JSON(200, gin.H{
+      "status" : result,
+      "message" : message,
+    })
 }

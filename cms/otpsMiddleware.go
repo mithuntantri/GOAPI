@@ -3,7 +3,6 @@ package main
 import (
   "bytes"
   "fmt"
-  "reflect"
   "encoding/json"
   "io/ioutil"
   "net/http"
