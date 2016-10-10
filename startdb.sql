@@ -17,7 +17,15 @@ CREATE TABLE "profile" (
   OIDS=FALSE
 );
 
-
+CREATE TABLE "options" (
+	"option_key" int NOT NULL,
+	"option_name" varchar(30) NOT NULL,
+	"option_code" varchar(30) NOT NULL,
+	"price" varchar(10) NOT NULL,
+	CONSTRAINT options_pk PRIMARY KEY ("option_key")
+) WITH (
+  OIDS=FALSE
+);
 
 CREATE TABLE "clients" (
 	"client_id" int NOT NULL,
