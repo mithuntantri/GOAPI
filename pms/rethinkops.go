@@ -14,6 +14,19 @@ type productType struct{
   OptionCode string `gorethink:"option_code"`
   Price int `json:"price"`
 }
+type newDesignHash struct{
+  Hash string `gorethink:"id"`
+  Fit string `gorethink:"fit"`
+  Sleeve string `gorethink:"sleeve"`
+  Collar string `gorethink:"collar"`
+  Cuff string `gorethink:"cuff"`
+  Placket string `gorethink:"placket"`
+  PocketPlacement string `gorethink:"pocket_placement"`
+  PocketType string `gorethink:"pocket_type"`
+  PocketLid string `gorethink:"pocket_lid"`
+  BackDetails string `gorethink:"back_details"`
+  Bottom Cut string `gorethink:"bottom_cut"`
+}
 func connectDB()  {
   var err error
   session, err = r.Connect(r.ConnectOpts{
@@ -32,27 +45,34 @@ func createDB()  {
     r.DBCreate("mithun"),
   ).Run(session)
   checkErr(err)
-  createProductTypesTable()
+  createDesignHashTable()
 }
-func createProductTypesTable() {
-  fmt.Println("Creating the productTypes table")
+func createDesignHashTable() {
+  fmt.Println("Creating the design HashTable table")
   _, err := r.Branch(
-    r.DB("mithun").TableList().Contains("productTypes"),
+    r.DB("mithun").TableList().Contains("designHash"),
     nil,
-    r.DB("mithun").TableCreate("productTypes"),
+    r.DB("mithun").TableCreate("designHash"),
   ).Run(session)
   checkErr(err)
 }
-func insertProductType(option_key int, option_name, option_code string, price int)  bool{
-  inserr := r.DB("mithun").Table("productTypes").Insert(productType{
-    OptionKey : strconv.Itoa(option_key),
-    OptionName: option_name,
-    OptionCode: option_code,
-    Price: price,
+func insertNewHash(hash string)  bool{
+  inserr := r.DB("mithun").Table("productTypes").Insert(newDesignHash{
+    Hash : hash,
+    Fit: "101",
+    Sleeve: "201",
+    Collar: "301",
+    Cuff: "401"
+    Placket:"501",
+    Pocket Placement:"601",
+    Pocket Type:"701",
+    Pocket Lid:"No",
+    Back Details:"801",
+    Bottom Cut: "901",
     }).Exec(session)
   checkErr(inserr)
   return true
 }
-func getProductTypes(choice string)  {
+func updateHashTable(hash, choice, option_key string)  {
 
 }

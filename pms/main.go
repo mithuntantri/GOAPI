@@ -4,7 +4,7 @@ import (
   "github.com/gin-gonic/gin"
 )
 func main()  {
-  // createProductTypes()
+  connectPSQL()
   router := gin.Default()
   router.GET("/product/categories", getCategoriesHandler)
   router.GET("/product/init", initProductHandler)

@@ -53,77 +53,43 @@ type initData struct{
   Hash string `json:"hash"`
   Data []Set `json:"data"`
 }
-func fetchOptions(choice int, option_number int)  Options{
-  var option = Options{
-    Name : "Long Sleeve",
-    Code : "long_sleeve",
-    Key : "202",
-    Enabled : true,
-    Selected : true,
-    Price : "",
-  }
-  return option
-}
-func getOptionsCount() []string{
-  var optionsCount []string = []string{3, 4, 3, 17, 10}
-}
-func makeOptionsList() []string{
+func makeOptionsList() ([]string,[]int){
+  var optionsCount []int = []int{3, 3, 17, 10, 7, 3, 3, 4, 3}
   var optionsList []string = []string{
     "Fit",
-    "Fabric",
     "Sleeve",
     "Collar",
     "Cuff",
+    "Placket",
+    "Pocket Placement",
+    "Pocket Type",
+    "Pocket Lid",
     "Back Details",
     "Bottom Cut",
-    "Button",
-    "Button Placket Contrast",
-    "Collar Contrast",
-    "Contrast Button Hole Thread",
-    "Contrast Button Thread",
-    "Elbow Patch Contrast",
-    "Embroidery Font",
-    "Embroidery Thread Color",
-    "Fastening Spin",
-    "Handkerchief",
-    "Inner Cuff Contrast",
-    "Inner Collar Contrast",
-    "Inner Fastening Contrast",
-    "Outer Cuff Contrast",
-    "Outer Fastening Contrast",
-    "Placket",
-    "Pocket Lid",
-    "Pocket Type",
-    "Pocket Contrast",
-    "Pocket Placement",
-    "Sleeve Placket Contrast",
-    "Tie Fix",
-    "Under Collar Contrast"
   }
-  return optionsList
+  return optionsList, optionsCount
 }
 func initProductHandler(c *gin.Context)  {
-    var optionsList = makeOptionsList()
-    var optionsCount = getOptionsCount()
+    var optionsList, optionsCount = makeOptionsList()
 
     var common_set Set
     var initdata initData
     initdata.Hash, _ = Generate(`[a-Z]{20}`)
 
     initdata.Data = make([]Set, 0)
-    for i:=0;i<=29;i++{
+    for i:=0;i<9;i++{
       common_set.Key = strconv.Itoa(i+1)
       common_set.Name = optionsList[i]
       common_set.Options = make([]Options, 0)
-      optionsCount := optionsCount[i]
+      var optionsCount = optionsCount[i]
       for j:=1; j<=optionsCount; j++{
         var option Options
-        option = fetchOptions(i)
+        option = fetchOptions(i + 1, j)
         common_set.Options = append(common_set.Options, option)
       }
       initdata.Data = append(initdata.Data, common_set)
     }
-
+    insertNewHash(initdata.Hash)
     c.JSON(200, gin.H{
       "status": "success",
       "data": initdata,
