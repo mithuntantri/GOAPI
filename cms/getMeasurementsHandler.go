@@ -43,6 +43,9 @@ func getMeasurementsHandler(c *gin.Context)  {
     }else{
       measurement_id := getMeasurementsID(request.Mobileno)
       measurements := getMeasurements(measurement_id)
+      if measurements.MeasurementID == ""{
+
+      }
       c.JSON(200, gin.H{
         "status" : "success",
         "data" : measurements,
