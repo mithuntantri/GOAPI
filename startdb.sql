@@ -18,7 +18,7 @@ CREATE TABLE "profile" (
 );
 
 CREATE TABLE "options" (
-	"option_key" int NOT NULL,
+	"option_key" varchar(5) NOT NULL,
 	"option_name" varchar(30) NOT NULL,
 	"option_code" varchar(30) NOT NULL,
 	"price" varchar(10) NOT NULL,
