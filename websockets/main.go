@@ -9,7 +9,10 @@ import (
         "fmt"
         "time"
 )
-
+type client struct{
+  conn *websocket.Conn
+  send chan []byte
+}
 // setup a channel for delivering stocks
 var stockChannel = make(chan int64, 5)
 var newChannel = make(chan string, 10)
@@ -32,26 +35,30 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
         fmt.Println("Failed to set websocket upgrade: %+v", err)
         return
     }
-
+    fmt.Println("Websocket called")
     for {
-        _, msg, _ := conn.ReadMessage()
-        fmt.Println("msg", string(msg[:]))
+        var msg struct{
+          Channel string `json:"channel"`
+          Event string `json:"event"`
+        }
+        conn.ReadJSON(&msg)
+        fmt.Println("msg", msg.Channel, msg.Event)
         for{
-          if string(msg[:]) == "close" {
+          if msg.Event == "close" {
             fmt.Println("Closing Connection")
             err := conn.Close()
             if err != nil {
                 fmt.Println("Failed to close websocket", err)
                 return
             }
-          }else if string(msg[:]) == "c:n"{
+          }else if msg.Channel == "c:n"{
             data:= <-newChannel
             var response = map[string]interface{}{
               "ref" : "1",
               "data" : data,
             }
             conn.WriteJSON(response)
-          }else{
+          }else if msg.Channel == "c:d"{
             data:= <- stockChannel
             var response = map[string]interface{}{
               "ref" : "1",
@@ -62,7 +69,9 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
         }
     }
 }
+func listenChan1(conn )  {
 
+}
 func SendTicker() {
     var tick int64 = 0
     for {
@@ -82,8 +91,14 @@ func SendName()  {
 }
 func main() {
   router := gin.Default()
-  router.GET("/", func(c *gin.Context) {
-        wshandler(c.Writer, c.Request)
+  var request struct{
+    Token string `form:"token" binding:"required"`
+    LoginID string `form:"login_id" binding:"required"`
+  }
+  router.GET("/gowebsocket/websocket", func(c *gin.Context) {
+        if c.Bind(&request) == nil{
+          wshandler(c.Writer, c.Request)
+        }
     })
   go SendName()
   go SendTicker()
