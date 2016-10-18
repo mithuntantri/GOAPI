@@ -51,17 +51,18 @@ type DesignShirt struct{
 }
 type initData struct{
   Hash string `json:"hash"`
-  Data []Set `json:"data"`
+  TotalPrice string `json:"total_price"`
+  Data []Set `json:"all_options"`
 }
 func makeOptionsList() ([]string,[]int){
-  var optionsCount []int = []int{3, 3, 17, 10, 7, 3, 3, 4, 3}
+  var optionsCount []int = []int{3, 3, 17, 10, 7, 3, 3, 2, 4, 3}
   var optionsList []string = []string{
     "Fit",
     "Sleeve",
     "Collar",
     "Cuff",
     "Placket",
-    "Pocket Placement",
+    "Pocket",
     "Pocket Type",
     "Pocket Lid",
     "Back Details",
@@ -75,9 +76,9 @@ func initProductHandler(c *gin.Context)  {
     var common_set Set
     var initdata initData
     initdata.Hash, _ = Generate(`[a-Z]{20}`)
-
+    initdata.TotalPrice = "700.00"
     initdata.Data = make([]Set, 0)
-    for i:=0;i<9;i++{
+    for i:=0;i<=9;i++{
       common_set.Key = strconv.Itoa(i+1)
       common_set.Name = optionsList[i]
       common_set.Options = make([]Options, 0)

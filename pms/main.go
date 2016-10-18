@@ -5,13 +5,16 @@ import (
 )
 func main()  {
   connectPSQL()
+  connectDB()
   router := gin.Default()
   router.GET("/product/categories", getCategoriesHandler)
   router.GET("/product/init", initProductHandler)
-  router.POST("/product/getOptions", getOptionsHandler)
-  router.POST("/product/setValue", setValueHandler)
+  router.GET("/product/options", getOptionsHandler)
+  router.POST("/product/options", setValueHandler)
   router.Run(":2222")
 }
-func checkErr(err error)  {
-  panic(err)
+func checkErr(err error) {
+    if err != nil {
+        panic(err)
+    }
 }

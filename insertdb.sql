@@ -57,11 +57,15 @@ INSERT INTO options (option_key, option_name, option_code, price) VALUES ('701',
 INSERT INTO options (option_key, option_name, option_code, price) VALUES ('702', 'Skewed', 'skewed', 0);
 INSERT INTO options (option_key, option_name, option_code, price) VALUES ('703', 'V-Shaped', 'v_shaped', 0);
 
-INSERT INTO options (option_key, option_name, option_code, price) VALUES ('801', 'No Back Details', 'no_back_details', 0);
-INSERT INTO options (option_key, option_name, option_code, price) VALUES ('802', 'Center Folds', 'center_folds', 0);
-INSERT INTO options (option_key, option_name, option_code, price) VALUES ('803', 'Side Folds', 'side_folds', 0);
-INSERT INTO options (option_key, option_name, option_code, price) VALUES ('804', 'Back Darts', 'back_darts', 0);
+INSERT INTO options (option_key, option_name, option_code, price) VALUES ('801', 'No', 'no', 0);
+INSERT INTO options (option_key, option_name, option_code, price) VALUES ('802', 'Yes', 'yes', 0);
 
-INSERT INTO options (option_key, option_name, option_code, price) VALUES ('901', 'Classic', 'classic', 0);
-INSERT INTO options (option_key, option_name, option_code, price) VALUES ('902', 'Modern', 'modern', 0);
-INSERT INTO options (option_key, option_name, option_code, price) VALUES ('903', 'Straight', 'straight', 0);
+INSERT INTO options (option_key, option_name, option_code, price) VALUES ('901', 'No Back Details', 'no_back_details', 0);
+INSERT INTO options (option_key, option_name, option_code, price) VALUES ('902', 'Center Folds', 'center_folds', 0);
+INSERT INTO options (option_key, option_name, option_code, price) VALUES ('903', 'Side Folds', 'side_folds', 0);
+INSERT INTO options (option_key, option_name, option_code, price) VALUES ('904', 'Back Darts', 'back_darts', 0);
+
+
+INSERT INTO options (option_key, option_name, option_code, price) VALUES ('1001', 'Classic', 'classic', 0);
+INSERT INTO options (option_key, option_name, option_code, price) VALUES ('1002', 'Modern', 'modern', 0);
+INSERT INTO options (option_key, option_name, option_code, price) VALUES ('1003', 'Straight', 'straight', 0);
