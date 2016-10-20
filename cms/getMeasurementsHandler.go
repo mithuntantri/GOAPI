@@ -5,6 +5,7 @@ import (
 )
 type measurements struct {
   MeasurementID string `json:"measurement_id"`
+  Name string `json:name`
   Mobileno string `json:"mobileno"`
   Units string `json:"units"`
   Neck  string `json:"neck"`
@@ -14,6 +15,7 @@ type measurements struct {
   Length string `json:"length"`
   Shoulder string `json:"shoulder"`
   Sleeve string `json:"sleeve"`
+  Default bool `json:"default"`
 }
 func getMeasurementsHandler(c *gin.Context)  {
   var request struct {

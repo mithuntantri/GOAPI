@@ -120,8 +120,11 @@ func createWalletID(wallet_id string)  bool{
   db.QueryRow("INSERT INTO wallet(wallet_id, referral_credits, profile_credits, promo_credits) VALUES($1,$2,$3,$4);", wallet_id, 0, 0 , 0)
   return true
 }
-func createMeasurementsID(measurement_id string)  bool{
-  db.QueryRow("INSERT INTO measurements(measurement_id, units, neck, chest, waist, hip, length, shoulder, sleeve) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9);", measurement_id, 0, 0 , 0, 0, 0, 0, 0, 0)
+func createMeasurementsID(measurement_id, mobileno string)  bool{
+  is_default := true
+  var lastInsertId string
+  err := db.QueryRow("INSERT INTO measurements(measurement_id, mobileno, name, units, neck, chest, waist, hip, length, shoulder, sleeve, is_default) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);", measurement_id, mobileno, "Default Measurements", 0, 0 , 0, 0, 0, 0, 0, 0, is_default).Scan(&lastInsertId)
+  checkErr(err)
   return true
 }
 func getWallet(wallet_id string) (int, int, int){
@@ -138,7 +141,7 @@ func getMeasurementsID(mobileno string) string{
 }
 func getMeasurements(measurement_id string) measurements{
   var m measurements
-  db.QueryRow("SELECT measurement_id, units, neck, chest, waist, hip, length, shoulder, sleeve FROM measurements WHERE measurement_id=$1",measurement_id).Scan(&m.MeasurementID, &m.Units, &m.Neck, &m.Chest, &m.Waist, &m.Hip, &m.Length, &m.Shoulder, &m.Sleeve)
+  db.QueryRow("SELECT measurement_id, mobileno, name, units, neck, chest, waist, hip, length, shoulder, sleeve, is_default FROM measurements WHERE measurement_id=$1",measurement_id).Scan(&m.MeasurementID, &m.Mobileno, &m.Name, &m.Units, &m.Neck, &m.Chest, &m.Waist, &m.Hip, &m.Length, &m.Shoulder, &m.Sleeve, &m.Default)
   return m
 }
 func createProfile(request profileRequest, referral_id, wallet_id, referred_id, measurement_id string)  bool{

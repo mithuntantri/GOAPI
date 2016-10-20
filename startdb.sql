@@ -11,7 +11,7 @@ CREATE TABLE "profile" (
 	"referral_id" varchar(30) NOT NULL,
 	"referred_id" varchar(20) NOT NULL,
 	"wallet_id" varchar(20) NOT NULL,
-	"measurement_id" varchar(20) NOT NULL,
+	"measurement_id" varchar(27) NOT NULL,
 	CONSTRAINT profile_pk PRIMARY KEY ("mobileno")
 ) WITH (
   OIDS=FALSE
@@ -103,6 +103,8 @@ CREATE TABLE "fbid_map" (
 
 CREATE TABLE "measurements" (
 	"measurement_id" varchar(20) NOT NULL,
+	"mobileno" varchar(10) NOT NULL,
+	"name" varchar(20) NOT NULL,
 	"units" varchar(2) NOT NULL,
 	"neck" int NOT NULL,
 	"chest" int NOT NULL,
@@ -111,6 +113,7 @@ CREATE TABLE "measurements" (
 	"length" int NOT NULL,
 	"shoulder" int NOT NULL,
 	"sleeve" int NOT NULL,
+	"is_default" BOOLEAN NOT NULL,
 	CONSTRAINT measurements_pk PRIMARY KEY ("measurement_id")
 ) WITH (
   OIDS=FALSE
@@ -121,9 +124,8 @@ CREATE TABLE "measurements" (
 ALTER TABLE "profile" ADD CONSTRAINT "profile_fk0" FOREIGN KEY ("client_id") REFERENCES "clients"("client_id");
 ALTER TABLE "profile" ADD CONSTRAINT "profile_fk1" FOREIGN KEY ("referral_id") REFERENCES "referral"("referral_id");
 ALTER TABLE "profile" ADD CONSTRAINT "profile_fk2" FOREIGN KEY ("wallet_id") REFERENCES "wallet"("wallet_id");
-ALTER TABLE "profile" ADD CONSTRAINT "profile_fk3" FOREIGN KEY ("measurement_id") REFERENCES "measurements"("measurement_id");
 
-
+ALTER TABLE "measurements" ADD CONSTRAINT "measurements_fk0" FOREIGN KEY ("mobileno") REFERENCES "profile"("mobileno");
 
 ALTER TABLE "credentials" ADD CONSTRAINT "credentials_fk0" FOREIGN KEY ("client_id") REFERENCES "clients"("client_id");
 

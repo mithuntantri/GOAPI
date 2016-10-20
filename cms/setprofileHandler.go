@@ -71,7 +71,7 @@ func setprofileHandler(c *gin.Context)  {
 
       createWalletID(walletID)
       createReferralID(referralID, walletID)
-      createMeasurementsID(measurementID)
+      createMeasurementsID(measurementID, request.Mobileno)
 
       //convert string to date
       if createProfile(request, referralID, walletID, referredID, measurementID) {
