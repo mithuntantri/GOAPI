@@ -5,8 +5,9 @@ import (
 )
 type measurements struct {
   MeasurementID string `json:"measurement_id"`
-  Name string `json:name`
+  Name string `json:"name"`
   Mobileno string `json:"mobileno"`
+  ClientID string `json:"client_id"`
   Units string `json:"units"`
   Neck  string `json:"neck"`
   Chest string `json:"chest"`
@@ -15,7 +16,7 @@ type measurements struct {
   Length string `json:"length"`
   Shoulder string `json:"shoulder"`
   Sleeve string `json:"sleeve"`
-  Default bool `json:"default"`
+  Default bool `json:"is_default"`
 }
 func getMeasurementsHandler(c *gin.Context)  {
   var request struct {
@@ -46,7 +47,10 @@ func getMeasurementsHandler(c *gin.Context)  {
       measurement_id := getMeasurementsID(request.Mobileno)
       measurements := getMeasurements(measurement_id)
       if measurements.MeasurementID == ""{
-
+        c.JSON(200, gin.H{
+          "status":"failed",
+          "message":"Failed to create measurements profile",
+        })
       }
       c.JSON(200, gin.H{
         "status" : "success",

@@ -122,9 +122,7 @@ func createWalletID(wallet_id string)  bool{
 }
 func createMeasurementsID(measurement_id, mobileno string)  bool{
   is_default := true
-  var lastInsertId string
-  err := db.QueryRow("INSERT INTO measurements(measurement_id, mobileno, name, units, neck, chest, waist, hip, length, shoulder, sleeve, is_default) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);", measurement_id, mobileno, "Default Measurements", 0, 0 , 0, 0, 0, 0, 0, 0, is_default).Scan(&lastInsertId)
-  checkErr(err)
+  db.QueryRow("INSERT INTO measurements(measurement_id, mobileno, name, units, neck, chest, waist, hip, length, shoulder, sleeve, is_default) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);", measurement_id, mobileno, "Default Measurements", 0, 0 , 0, 0, 0, 0, 0, 0, is_default)
   return true
 }
 func getWallet(wallet_id string) (int, int, int){
@@ -143,6 +141,10 @@ func getMeasurements(measurement_id string) measurements{
   var m measurements
   db.QueryRow("SELECT measurement_id, mobileno, name, units, neck, chest, waist, hip, length, shoulder, sleeve, is_default FROM measurements WHERE measurement_id=$1",measurement_id).Scan(&m.MeasurementID, &m.Mobileno, &m.Name, &m.Units, &m.Neck, &m.Chest, &m.Waist, &m.Hip, &m.Length, &m.Shoulder, &m.Sleeve, &m.Default)
   return m
+}
+func updateMeasurements(measurement_id string, m measurements) bool{
+  db.QueryRow("UPDATE measurements SET name=$1,units=$2,neck=$3,chest=$4,waist=$5,hip=$6,length=$7,shoulder=$8,sleeve=$9,is_default=$10 where measurement_id=$11",m.Name, m.Units, m.Neck, m.Chest, m.Waist, m.Hip, m.Length, m.Shoulder, m.Sleeve, m.Default, measurement_id)
+  return true
 }
 func createProfile(request profileRequest, referral_id, wallet_id, referred_id, measurement_id string)  bool{
   fmt.Println("Creating Profile : ", referral_id, wallet_id, referral_id, measurement_id)
