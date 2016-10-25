@@ -52,9 +52,9 @@ func getProfileHandler(c *gin.Context)  {
             "gender" : response.Gender,
           },
           "saved_address" : map[string]interface{}{
-            "address" : response.Address,
-            "street": response.Street,
-            "pin_code" : response.PinCode,
+            "address" : "",
+            "street": "",
+            "pin_code" : "",
           },
           "saved_bank": map[string]interface{}{},
           "saved_cards": map[string]interface{}{},
