@@ -12,17 +12,33 @@ func main()  {
     connectPSQL()
     connectDB()
     router := gin.Default()
+
     router.POST("/api/signup", signupHandler)
     router.POST("/api/signup/verify", verifySignupHandler)
     router.POST("/api/signup/resend", resendSignupHandler)
     router.POST("/api/setpassword", setpaswordHandler)
-    router.POST("/api/setprofile", setprofileHandler)
+
     router.POST("/api/login", loginHandler)
     router.DELETE("/api/logout", logoutHandler)
-    router.POST("/api/admin/add", adminAddHandler)
-    router.POST("/api/measurements", updateMeasurementsHandler)
-    router.GET("/api/measurements", getMeasurementsHandler)
+
     router.GET("/api/profile", getProfileHandler)
+    router.POST("/api/profile", setprofileHandler)
+
+    router.GET("/api/coupons", getCouponsHandler)
+
+    router.GET("/api/address", getAddressesHandler)
+    router.POST("/api/address", createAddressHandler)
+    router.PUT("/api/address", updateAddressHandler)
+
+    router.GET("/api/measurements", getMeasurementsHandler)
+    router.POST("/api/measurements", createMeasurementsHandler)
+    router.PUT("/api/measurements", updateMeasurementsHandler)
+
+    router.GET("/api/orders", getOrdersHandler)
+    router.POST("/api/orders", createOrdersHandler)
+
+    router.GET("/api/slots", getSlotsHandler)
+
     router.Run(":3333")
 }
 func checkErr(err error) {

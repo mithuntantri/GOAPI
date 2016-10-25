@@ -12,9 +12,6 @@ type profileRequest struct{
   FirstName string `json:"first_name"`
   LastName  string `json:"last_name"`
   Gender    string `json:"gender"`
-  Address   string `json:"address"`
-  Street    string `json:"street"`
-  PinCode   string `json:"pin_code"`
 }
 func setprofileHandler(c *gin.Context)  {
   var request profileRequest
@@ -59,22 +56,11 @@ func setprofileHandler(c *gin.Context)  {
         walletID = part1 + part2
       }
 
-      //Generate a Measurement ID
-      first = strings.SplitN(request.Mobileno,"", 5)
-      part1 = strings.ToUpper(first[0] + first[1] + first[2] + first[3])
-      part2, _ = Generate(`[a-Z]{6}`)
-      measurementID := part1 + part2
-      if checkMeasurementID(walletID) {
-        part2, _ =Generate(`[a-Z]{6}`)
-        measurementID = part1 + part2
-      }
-
       createWalletID(walletID)
       createReferralID(referralID, walletID)
 
       //convert string to date
-      if createProfile(request, referralID, walletID, referredID, measurementID) {
-        createMeasurementsID(measurementID, request.Mobileno)
+      if createProfile(request, referralID, walletID, referredID) {
         insertEmailMap(request.Mobileno, request.EmailID)
         updateWallet(walletID, "profile_credits")
         c.JSON(200, gin.H{
