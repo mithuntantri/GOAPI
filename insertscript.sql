@@ -4,6 +4,28 @@ INSERT INTO clients (client_id, client_name) VALUES ('3', 'Pilot');
 INSERT INTO clients (client_id, client_name) VALUES ('4', 'Tailor');
 INSERT INTO clients (client_id, client_name) VALUES ('5', 'User');
 
+INSERT INTO coupons (coupon_id,description,expiry,only_new,only_first,only_app) VALUES ('FIRST100','Rs. 100 OFF on First Order',1477898999,false,true,false);
+INSERT INTO coupons (coupon_id,description,expiry,only_new,only_first,only_app) VALUES ('SUPERZIG','FLAT 10% OFF on orders more than RS. 300',1477898999,true,false,false);
+
+INSERT INTO slots (slot_id, slot_name) VALUES ('slot1', '9:00 AM to 11:00 AM');
+INSERT INTO slots (slot_id, slot_name) VALUES ('slot2', '11:00 AM to 1:00 PM');
+INSERT INTO slots (slot_id, slot_name) VALUES ('slot3', '1:00 PM to 3:00 PM');
+INSERT INTO slots (slot_id, slot_name) VALUES ('slot4', '3:00 PM to 5:00 PM');
+INSERT INTO slots (slot_id, slot_name) VALUES ('slot5', '5:00 PM to 7:00 PM');
+INSERT INTO slots (slot_id, slot_name) VALUES ('slot6', '7:00 PM to 9:00 PM');
+
+
+INSERT INTO credentials (mobileno, client_id, password) VALUES ('1111111111', '3', 'mithun');
+INSERT INTO credentials (mobileno, client_id, password) VALUES ('1111111112', '3', 'mithun');
+
+INSERT INTO username_map (username, mobileno) VALUES ('pilot1', '1111111111');
+INSERT INTO username_map (username, mobileno) VALUES ('pilot2', '1111111112');
+
+INSERT INTO appointments (appointment_id, appointment_day, slot_id, username) VALUES ('app1', 1477333800, 'slot1', 'pilot1');
+INSERT INTO appointments (appointment_id, appointment_day, slot_id, username) VALUES ('app2', 1477420200, 'slot1', 'pilot2');
+INSERT INTO appointments (appointment_id, appointment_day, slot_id, username) VALUES ('app3', 1477420200, 'slot1', 'pilot1');
+INSERT INTO appointments (appointment_id, appointment_day, slot_id, username) VALUES ('app4', 1477506600, 'slot1', 'pilot1');
+
 INSERT INTO options (option_key, option_name, option_code, price) VALUES ('101', 'Slim Fit', 'slim_fit' , 0);
 INSERT INTO options (option_key, option_name, option_code, price) VALUES ('102', 'Loose Fit', 'loose_fit', 0);
 INSERT INTO options (option_key, option_name, option_code, price) VALUES ('103', 'Normal Fit', 'normal_fit', 0);
