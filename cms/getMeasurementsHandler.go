@@ -18,6 +18,9 @@ type measurements struct {
   Sleeve string `json:"sleeve"`
   Default bool `json:"is_default"`
 }
+type Measurements struct{
+  AllMeasurements []measurements `json:"all_measurements"`
+}
 func getMeasurementsHandler(c *gin.Context)  {
   var request struct {
     Mobileno string `form:"mobileno" binding:"required"`
@@ -44,18 +47,12 @@ func getMeasurementsHandler(c *gin.Context)  {
         "message": "Request Unauthorized",
       })
     }else{
-      measurement_id := getMeasurementsID(request.Mobileno)
-      measurements := getMeasurements(measurement_id)
-      if measurements.MeasurementID == ""{
+        var all_measurements Measurements
+        all_measurements = fetchMeasurements(request.Mobileno)
         c.JSON(200, gin.H{
-          "status":"failed",
-          "message":"Failed to create measurements profile",
+          "status" :"success",
+          "data": all_measurements,
         })
-      }
-      c.JSON(200, gin.H{
-        "status" : "success",
-        "data" : measurements,
-      })
     }
   }
 }

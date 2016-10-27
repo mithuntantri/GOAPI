@@ -30,7 +30,38 @@ func getMeasurements(measurement_id string) measurements{
   db.QueryRow("SELECT measurement_id, mobileno, name, units, neck, chest, waist, hip, length, shoulder, sleeve, is_default FROM measurements WHERE measurement_id=$1",measurement_id).Scan(&m.MeasurementID, &m.Mobileno, &m.Name, &m.Units, &m.Neck, &m.Chest, &m.Waist, &m.Hip, &m.Length, &m.Shoulder, &m.Sleeve, &m.Default)
   return m
 }
-func updateMeasurements(measurement_id string, m measurements) bool{
-  db.QueryRow("UPDATE measurements SET name=$1,units=$2,neck=$3,chest=$4,waist=$5,hip=$6,length=$7,shoulder=$8,sleeve=$9,is_default=$10 where measurement_id=$11",m.Name, m.Units, m.Neck, m.Chest, m.Waist, m.Hip, m.Length, m.Shoulder, m.Sleeve, m.Default, measurement_id)
+func updateMeasurements(m measurements) bool{
+  stmt, err := db.Prepare("UPDATE measurements SET name=$1,units=$2,neck=$3,chest=$4,waist=$5,hip=$6,length=$7,shoulder=$8,sleeve=$9,is_default=$10 where measurement_id=$11")
+  checkErr(err)
+  _,err = stmt.Exec(m.Name, m.Units, m.Neck, m.Chest, m.Waist, m.Hip, m.Length, m.Shoulder, m.Sleeve, m.Default, m.MeasurementID)
+  if err != nil{
+    return false
+  }
   return true
+}
+func deleteMeasurements(measurement_id string) bool {
+  stmt, err := db.Prepare("DELETE FROM measurements WHERE measurement_id=$1")
+  checkErr(err)
+  _,err = stmt.Exec(measurement_id)
+  if err != nil{
+    return false
+  }
+  return true
+}
+func fetchMeasurements(mobileno string) Measurements {
+  var all_measurements Measurements
+  all_measurements.AllMeasurements = make([]measurements,0)
+  rows,err := db.Query("SELECT * from measurements WHERE mobileno=$1", mobileno)
+  if err != nil{
+    checkErr(err)
+  }
+  for rows.Next(){
+    var m measurements
+    if err := rows.Scan(&m.MeasurementID, &m.Mobileno, &m.Name, &m.Units, &m.Neck, &m.Chest, &m.Waist, &m.Hip, &m.Length, &m.Shoulder, &m.Sleeve, &m.Default); err != nil{
+      checkErr(err)
+    }else{
+      all_measurements.AllMeasurements = append(all_measurements.AllMeasurements, m)
+    }
+  }
+  return all_measurements
 }

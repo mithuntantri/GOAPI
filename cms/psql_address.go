@@ -13,15 +13,29 @@ func checkAddressID(address_id string)  bool{
     return true
   }
 }
-func updateAddress(address_id string, request createAddress) bool{
+func deleteAddress(address_id string) bool{
+  stmt,err := db.Prepare("DELETE FROM address WHERE address_id=$1;")
+  checkErr(err)
+  _,err = stmt.Exec(address_id)
+  if err != nil{
+    return false
+  }
+  return true
+}
+func updateAddress(request address) bool{
   if request.IsDefault{
-    err := db.QueryRow("UPDATE address SET is_default=$1 WHERE mobileno=$2;",false,request.Mobileno)
+    stmt, err := db.Prepare("UPDATE address SET is_default=$1 WHERE mobileno=$2;")
+    checkErr(err)
+    _,err = stmt.Exec(false,request.Mobileno)
     if err != nil{
       return false
     }
   }
-  err := db.QueryRow("UPDATE address SET address=$1, street=$2, pin_code=$3, is_default=$4 WHERE address_id=$5;", request.Address, request.Street, request.PinCode, request.IsDefault, address_id)
+  stmt, err := db.Prepare("UPDATE address SET address=$1, street=$2, pin_code=$3, is_default=$4 WHERE address_id=$5;")
+  checkErr(err)
+  _, err = stmt.Exec(request.Address, request.Street, request.PinCode, request.IsDefault, request.AddressID)
   if err != nil{
+    checkErr(err)
     return false
   }
   return true

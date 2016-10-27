@@ -26,12 +26,16 @@ func updateMeasurementsHandler(c *gin.Context)  {
         "message": "Request Unauthorized",
       })
     }else{
-        measurement_id := getMeasurementsID(request.Mobileno)
-        updated := updateMeasurements(measurement_id, request)
+        updated := updateMeasurements(request)
         if updated {
           c.JSON(200, gin.H{
             "status": "success",
             "message":"Measurements Updated Successfully",
+          })
+        }else{
+          c.JSON(200, gin.H{
+            "status": "success",
+            "message":"Failed to Update Measurements",
           })
         }
     }

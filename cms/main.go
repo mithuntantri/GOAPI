@@ -29,10 +29,12 @@ func main()  {
     router.GET("/api/address", getAddressesHandler)
     router.POST("/api/address", createAddressHandler)
     router.PUT("/api/address", updateAddressHandler)
+    router.DELETE("/api/address", deleteAddressHandler)
 
     router.GET("/api/measurements", getMeasurementsHandler)
     router.POST("/api/measurements", createMeasurementsHandler)
     router.PUT("/api/measurements", updateMeasurementsHandler)
+    router.DELETE("/api/measurements", deleteMeasurementsHandler)
 
     router.GET("/api/orders", getOrdersHandler)
     router.POST("/api/orders", createOrdersHandler)

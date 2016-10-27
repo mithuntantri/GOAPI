@@ -4,10 +4,10 @@ import (
   "github.com/gin-gonic/gin"
 )
 type address struct{
-  AddressID string `json:"string"`
+  AddressID string `json:"address_id"`
   Mobileno string `json:mobileno`
-  Address string `json:"string"`
-  Street string `json:"string"`
+  Address string `json:"address"`
+  Street string `json:"street"`
   PinCode string `json:"pin_code"`
   IsDefault bool `json:"is_default"`
 }
