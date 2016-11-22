@@ -5,6 +5,7 @@ import (
 )
 func setpaswordHandler(c *gin.Context)  {
   var request struct{
+    EmailID string `json:"email_id"`
     Mobileno string `json:"mobileno"`
     ClientID string `json:"client_id"`
     Password string `json:"password"`
@@ -18,7 +19,7 @@ func setpaswordHandler(c *gin.Context)  {
     registered, blocked, verified := checkRegistrationExists(request.Mobileno)
     if registered && verified {
       hashedPass := bcryptPassword(request.Password)
-      if addtoCredentials(request.Mobileno, request.ClientID, hashedPass){
+      if addtoCredentials(request.Mobileno, request.EmailID, true, false, request.ClientID, hashedPass){
         logintoken := generateToken(request.Mobileno, request.ClientID, true)
         inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token, mobile_device)
         c.JSON(200, gin.H{

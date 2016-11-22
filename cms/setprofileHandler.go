@@ -37,7 +37,7 @@ func setprofileHandler(c *gin.Context)  {
       referredID := getReferredID(request.Mobileno)
 
       //Generate a Referral ID
-      first := strings.SplitN(request.FirstName,"", 5)
+      first := strings.SplitN(request.Mobileno,"", 5)
       part1 := strings.ToUpper(first[0] + first[1] + first[2] + first[3])
       part2, _ := Generate(`[a-Z]{6}`)
       referralID := part1 + part2

@@ -1,7 +1,9 @@
 package main
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
+  "strings"
 )
 
 func verifySignupHandler(c *gin.Context)  {
@@ -11,28 +13,65 @@ func verifySignupHandler(c *gin.Context)  {
   }
   registered, blocked, verified := false, false, false
   if c.Bind(&request) == nil {
+    device := c.Request.Header.Get("Device")
+    mobile_device := false
+    if device == "mobile"{
+      mobile_device = true
+    }
     //Check for the new Registrations
     registered, blocked, verified = checkRegistrationExists(request.Mobileno)
+    fmt.Println("Checking for new Registration", registered, blocked, verified)
     if registered && !blocked && !verified {
-      //Verify OTP
-      blocked, verified = callverOTP(request.Mobileno, request.Otp, "v")
+        //Verify OTP
+        blocked, verified = callverOTP(request.Mobileno, request.Otp, "v")
         //Update Registrations
         updateRegistrations(request.Mobileno, blocked, verified)
-        referralID := getReferredID(request.Mobileno)
-        walletID := updateReferralTable(referralID)
-        updateWallet(walletID, "referral_credits")
-        c.JSON(200, gin.H{
-          "status" : "success",
-          "message": "",
-          "data":map[string]interface{}{
-            "blocked" : blocked,
-            "password_set" : false,
-            "profile_set" : false,
-            "first_time_login" : true,
-            "verified" : verified,
-          },
-        })
-      }
+        fmt.Println("Adding to DB", verified)
+        if verified{
+          ReferredID := getReferredID(request.Mobileno)
+          //Generate a Referral ID
+          first := strings.SplitN(request.Mobileno,"", 5)
+          part1 := strings.ToUpper(first[0] + first[1] + first[2] + first[3])
+          part2, _ := Generate(`[a-Z]{6}`)
+          referralID := part1 + part2
+          if checkReferralID(referralID) {
+            part2, _ =Generate(`[a-Z]{6}`)
+            referralID = part1 + part2
+          }
+
+          //Generate a Wallet ID
+          first = strings.SplitN(request.Mobileno,"", 5)
+          part1 = strings.ToUpper(first[0] + first[1] + first[2] + first[3])
+          part2, _ = Generate(`[a-Z]{6}`)
+          walletID := part1 + part2
+          if checkWalletID(walletID) {
+            part2, _ =Generate(`[a-Z]{6}`)
+            walletID = part1 + part2
+          }
+
+          createWalletID(walletID)
+          createReferralID(referralID, walletID)
+
+          walletID = updateReferralTable(ReferredID)
+          updateWallet(walletID, "referral_credits")
+
+          EmailID, ClientID, hashedPass := getRegistrationDetails(request.Mobileno)
+          if addtoCredentials(request.Mobileno, EmailID, true, false, ClientID, hashedPass){
+            logintoken := generateToken(request.Mobileno, ClientID, true)
+            inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token, mobile_device)
+            c.JSON(200, gin.H{
+              "status":"success",
+              "message":"",
+              "data":map[string]interface{}{
+                "validUser": true,
+                "password_set" :  inserr,
+                "profile_set" : false,
+                "first_time_login" :  true,
+                "secret":logintoken.Token,
+              },
+            })
+          }
+        }
     }else if !registered {
       c.JSON(200, gin.H{
         "status" : "failed",
@@ -53,3 +92,4 @@ func verifySignupHandler(c *gin.Context)  {
       })
     }
   }
+}

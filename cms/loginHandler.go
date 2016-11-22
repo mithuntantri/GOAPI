@@ -27,7 +27,10 @@ func loginHandler(c *gin.Context)  {
     if request.Password != ""{
       // hashedPass = getHashedPassword(request.ID, request.Password)
     }
-    credentialsExist := checkCredentials(request.ID, request.ClientID, request.Password)
+    credentialsExist := false
+    if credentialsExist = checkCredentials(request.ID, request.ClientID, request.Password, true);!credentialsExist{
+      credentialsExist = checkCredentials(request.ID, request.ClientID, request.Password, false)
+    }
     if !credentialsExist && !request.OtpLogin{
       if !checkIfEmailID(request.ID){
         if !checkIfUsername(request.ID){
@@ -53,7 +56,7 @@ func loginHandler(c *gin.Context)  {
         //Credentials exists with Emailid
         mobileno = getMobileNumber(request.ID, "emailid_map", "email_id")
       }
-      if checkCredentials(mobileno, request.ClientID, request.Password){
+      if checkCredentials(mobileno, request.ClientID, request.Password, true){
         logintoken = generateToken(mobileno, request.ClientID, request.Expiry)
       }
     }else if credentialsExist && request.OtpLogin && request.Otp == ""{
@@ -105,7 +108,7 @@ func loginHandler(c *gin.Context)  {
       if logintoken.Token == ""{
         c.JSON(200, gin.H{
           "status":"failed",
-          "message":"Failed to generate Login token",
+          "message":"Invalid UserID or Password",
           "data":map[string]interface{}{
               "validUser": true,
               "secret":logintoken.Token,
