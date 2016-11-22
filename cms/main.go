@@ -18,6 +18,8 @@ func main()  {
     router.POST("/api/signup/resend", resendSignupHandler)
     router.POST("/api/setpassword", setpaswordHandler)
 
+    router.POST("/api/verifyemail", verifyEmailIDHandler)
+
     router.POST("/api/login", loginHandler)
     router.DELETE("/api/logout", logoutHandler)
 

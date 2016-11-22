@@ -1,6 +1,7 @@
 package main
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
 )
 
@@ -28,8 +29,10 @@ func loginHandler(c *gin.Context)  {
       // hashedPass = getHashedPassword(request.ID, request.Password)
     }
     credentialsExist := false
+    ID_is_email := false
     if credentialsExist = checkCredentials(request.ID, request.ClientID, request.Password, true);!credentialsExist{
       credentialsExist = checkCredentials(request.ID, request.ClientID, request.Password, false)
+      ID_is_email = credentialsExist
     }
     if !credentialsExist && !request.OtpLogin{
       if !checkIfEmailID(request.ID){
@@ -54,9 +57,10 @@ func loginHandler(c *gin.Context)  {
         }
       }else{
         //Credentials exists with Emailid
-        mobileno = getMobileNumber(request.ID, "emailid_map", "email_id")
+        mobileno = getMobileNumberFromEmail(request.ID)
       }
       if checkCredentials(mobileno, request.ClientID, request.Password, true){
+        fmt.Println("Genrating login token", mobileno)
         logintoken = generateToken(mobileno, request.ClientID, request.Expiry)
       }
     }else if credentialsExist && request.OtpLogin && request.Otp == ""{
@@ -100,7 +104,13 @@ func loginHandler(c *gin.Context)  {
         return
       }
     }else if credentialsExist && !request.OtpLogin && !request.FBLogin {
-      logintoken = generateToken(request.ID, request.ClientID, request.Expiry)
+      fmt.Println("New token generating")
+      if ID_is_email{
+          mobileno = getMobileNumberFromEmail(request.ID)
+          logintoken = generateToken(mobileno, request.ClientID, request.Expiry)
+      }else{
+        logintoken = generateToken(request.ID, request.ClientID, request.Expiry)
+      }
     }
     isExists := checkTokenExists(logintoken.ID, logintoken.ClientID, mobile_device)
     if !isExists {

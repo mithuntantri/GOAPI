@@ -20,7 +20,11 @@ func QuoteIdentifier(name string) string {
     }
     return `"` + strings.Replace(name, `"`, `""`, -1) + `"`
 }
-
+func getMobileNumberFromEmail(email_id string) string{
+  var mobileno string
+  db.QueryRow("SELECT mobileno FROM credentials WHERE email_id=$1",email_id).Scan(&mobileno)
+  return mobileno
+}
 func getMobileNumber(id, table_name, field_name string) string{
   var mobileno string
   db.QueryRow(fmt.Sprintf("SELECT mobileno FROM %s WHERE %s=$1",

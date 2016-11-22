@@ -22,6 +22,13 @@ type loginTokens struct {
   ClientID string `gorethink:"client_id"`
   Token string `gorethink:"token"`
   MobileToken string `gorethink:"mobile_token"`
+  EmailToken string `gorethink:"email_token"`
+}
+type emailTokens struct{
+  ID string `gorethink:"id, omitempty"`
+  EmailID string `gorethink:"email_id"`
+  ClientID string `gorethink:"client_id"`
+  Token string `gorethink:"token"`
 }
 func connectDB()  {
   var err error
@@ -203,7 +210,7 @@ func getApplicationSalt(id string)  string{
 //handles request for new otp
 func createNewToken(id, client_id, token string, mobile_device bool) bool{
   fmt.Println("Creating New Login Token")
-  var mobileToken, webToken string
+  var mobileToken, webToken, emailToken string
   if mobile_device {
     mobileToken = token
     webToken = ""
@@ -211,6 +218,7 @@ func createNewToken(id, client_id, token string, mobile_device bool) bool{
     mobileToken = ""
     webToken = token
   }
+  emailToken = ""
   if checkTokenEntryExists(id,client_id, mobile_device){
     updateToken(id, token, mobile_device)
     return true
@@ -220,6 +228,7 @@ func createNewToken(id, client_id, token string, mobile_device bool) bool{
     ClientID: client_id,
     Token : webToken,
     MobileToken :  mobileToken,
+    EmailToken : emailToken,
     }).Exec(session)
     checkErr(inserr)
   return true
@@ -252,6 +261,26 @@ func updateToken(id, token string, mobile_device bool) {
     r.DB("mithun").Table("loginTokens").Get(id).Update(map[string]interface{}{
       "token" : token,
     }).Exec(session)
+  }
+}
+func updateEmailToken(id, token string) {
+  fmt.Println("Updating Token", id, token)
+  r.DB("mithun").Table("loginTokens").Get(id).Update(map[string]interface{}{
+    "email_token" : "token",
+  }).Exec(session)
+}
+func verifyEmailToken(id, tokenString string) bool{
+  fmt.Println("Verifying Email Token")
+  curr, _ := r.DB("mithun").Table("loginTokens").Get(id).Run(session)
+  var n loginTokens
+  curr.One(&n)
+  curr.Close()
+  var token string
+  token = n.EmailToken
+  if token == tokenString{
+    return true
+  }else{
+    return false
   }
 }
 func deleteToken(id string, mobile_device bool)  {
