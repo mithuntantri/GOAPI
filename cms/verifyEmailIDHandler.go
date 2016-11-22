@@ -16,20 +16,27 @@ func verifyEmailIDHandler(c *gin.Context)  {
         "status" : "failed",
         "message" : "Invalid Request! Failed to Verify Email ID",
       })
-    }else if authenticateEmailToken(request.Token){
-      c.JSON(200, gin.H{
-        "status" : "success",
-        "message" : "Email ID Verified Successfully",
-      })
+    }else if mobileno, verified := authenticateEmailToken(request.Token); verified{
+      if updateVerifiedEmail(mobileno){
+        c.JSON(200, gin.H{
+          "status" : "success",
+          "message" : "Email ID Verified Successfully",
+        })
+      }else{
+        c.JSON(200, gin.H{
+          "status" : "failed",
+          "message" : "Something went wrong! Failed to verify Email ID",
+        })
+      }
     }else{
       c.JSON(200, gin.H{
-        "status" : "success",
+        "status" : "failed",
         "message" : "Failed to verify Email ID",
       })
     }
   }
 }
-func authenticateEmailToken(tokenString string) (bool) {
+func authenticateEmailToken(tokenString string) (string, bool) {
   vertoken, _ := jwt.Parse(tokenString, func (token *jwt.Token) (interface{}, error)  {
     if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
        return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -43,10 +50,10 @@ func authenticateEmailToken(tokenString string) (bool) {
     valid := checkTokenExists(id, client_id, true)
     if valid {
       if verifyEmailToken(id, tokenString){
-        return true
+        return id, true
       }
     }
-    return false
+    return "", false
   }
-  return false
+  return "", false
 }

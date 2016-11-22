@@ -59,6 +59,7 @@ func verifySignupHandler(c *gin.Context)  {
           if addtoCredentials(request.Mobileno, EmailID, true, false, ClientID, hashedPass){
             logintoken := generateToken(request.Mobileno, ClientID, true)
             inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token, mobile_device)
+            sendEmailVerification(request.Mobileno, ClientID, EmailID)
             c.JSON(200, gin.H{
               "status":"success",
               "message":"",

@@ -266,7 +266,7 @@ func updateToken(id, token string, mobile_device bool) {
 func updateEmailToken(id, token string) {
   fmt.Println("Updating Token", id, token)
   r.DB("mithun").Table("loginTokens").Get(id).Update(map[string]interface{}{
-    "email_token" : "token",
+    "email_token" : token,
   }).Exec(session)
 }
 func verifyEmailToken(id, tokenString string) bool{

@@ -31,7 +31,6 @@ func signupHandler(c *gin.Context)  {
               //Create an Entry in New registrations
               hashedPass := bcryptPassword(request.Password)
               createRegistration(request.Mobileno, request.EmailID, hashedPass, request.ClientID, request.ReferralID)
-              sendEmailVerification(request.Mobileno, request.ClientID, request.EmailID)
             }
             c.JSON(200, gin.H{
               "status" : "success",

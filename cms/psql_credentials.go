@@ -33,6 +33,16 @@ func addtoCredentials(mobileno , email_id string, ver1 bool, ver2 bool, client_i
   return true
 }
 
+func updateVerifiedEmail(mobileno string)  bool{
+  stmt, err := db.Prepare("UPDATE credentials SET verified_email=$1 WHERE mobileno=$2;")
+  checkErr(err)
+  _,err = stmt.Exec(true, mobileno)
+  if err != nil{
+    return false
+  }
+  return true
+}
+
 func checkCredentials(key, client_id, password string, is_mobileno bool) bool{
   var hashedPass string
   var db_clientid string
