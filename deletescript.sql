@@ -1,6 +1,5 @@
 DELETE FROM clients;
 DELETE FROM profile;
-DELETE FROM emailid_map;
 DELETE FROM username_map;
 DELETE FROM fbid_map;
 DELETE FROM referral;

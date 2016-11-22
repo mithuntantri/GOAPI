@@ -37,42 +37,11 @@ CREATE TABLE "wallet" (
 
 
 
-CREATE TABLE "credentials" (
-	"mobileno" varchar(10) NOT NULL,
-	"client_id" int NOT NULL,
-	"password" varchar(255) NOT NULL,
-	CONSTRAINT credentials_pk PRIMARY KEY ("mobileno")
-) WITH (
-  OIDS=FALSE
-);
-
-
-
 CREATE TABLE "referral" (
 	"referral_id" varchar(30) NOT NULL,
 	"referral_count" int NOT NULL,
 	"wallet_id" varchar(20) NOT NULL,
 	CONSTRAINT referral_pk PRIMARY KEY ("referral_id")
-) WITH (
-  OIDS=FALSE
-);
-
-
-
-CREATE TABLE "emailid_map" (
-	"email_id" varchar(127) NOT NULL,
-	"mobileno" varchar(10) NOT NULL,
-	CONSTRAINT emailid_map_pk PRIMARY KEY ("email_id")
-) WITH (
-  OIDS=FALSE
-);
-
-
-
-CREATE TABLE "username_map" (
-	"username" varchar(30) NOT NULL,
-	"mobileno" varchar(10) NOT NULL,
-	CONSTRAINT username_map_pk PRIMARY KEY ("username")
 ) WITH (
   OIDS=FALSE
 );
@@ -227,19 +196,37 @@ CREATE TABLE "slots" (
 
 
 
+CREATE TABLE "credentials" (
+	"mobileno" varchar(10) NOT NULL,
+	"email_id" varchar(127) NOT NULL,
+	"verified_mobile" bool NOT NULL,
+	"verified_email" bool NOT NULL,
+	"client_id" int NOT NULL,
+	"password" varchar(255) NOT NULL,
+	CONSTRAINT credentials_pk PRIMARY KEY ("mobileno")
+) WITH (
+  OIDS=FALSE
+);
+
+
+
+CREATE TABLE "username_map" (
+	"username" varchar(30) NOT NULL,
+	"mobileno" varchar(10) NOT NULL,
+	CONSTRAINT username_map_pk PRIMARY KEY ("username")
+) WITH (
+  OIDS=FALSE
+);
+
+
+
 ALTER TABLE "profile" ADD CONSTRAINT "profile_fk0" FOREIGN KEY ("client_id") REFERENCES "clients"("client_id");
 ALTER TABLE "profile" ADD CONSTRAINT "profile_fk1" FOREIGN KEY ("referral_id") REFERENCES "referral"("referral_id");
 ALTER TABLE "profile" ADD CONSTRAINT "profile_fk2" FOREIGN KEY ("wallet_id") REFERENCES "wallet"("wallet_id");
 
 
 
-ALTER TABLE "credentials" ADD CONSTRAINT "credentials_fk0" FOREIGN KEY ("client_id") REFERENCES "clients"("client_id");
-
 ALTER TABLE "referral" ADD CONSTRAINT "referral_fk0" FOREIGN KEY ("wallet_id") REFERENCES "wallet"("wallet_id");
-
-ALTER TABLE "emailid_map" ADD CONSTRAINT "emailid_map_fk0" FOREIGN KEY ("mobileno") REFERENCES "credentials"("mobileno");
-
-ALTER TABLE "username_map" ADD CONSTRAINT "username_map_fk0" FOREIGN KEY ("mobileno") REFERENCES "credentials"("mobileno");
 
 ALTER TABLE "fbid_map" ADD CONSTRAINT "fbid_map_fk0" FOREIGN KEY ("mobileno") REFERENCES "credentials"("mobileno");
 
@@ -261,3 +248,8 @@ ALTER TABLE "delivery" ADD CONSTRAINT "delivery_fk0" FOREIGN KEY ("order_id") RE
 
 ALTER TABLE "appointments" ADD CONSTRAINT "appointments_fk0" FOREIGN KEY ("slot_id") REFERENCES "slots"("slot_id");
 ALTER TABLE "appointments" ADD CONSTRAINT "appointments_fk1" FOREIGN KEY ("username") REFERENCES "username_map"("username");
+
+
+ALTER TABLE "credentials" ADD CONSTRAINT "credentials_fk0" FOREIGN KEY ("client_id") REFERENCES "clients"("client_id");
+
+ALTER TABLE "username_map" ADD CONSTRAINT "username_map_fk0" FOREIGN KEY ("mobileno") REFERENCES "credentials"("mobileno");
