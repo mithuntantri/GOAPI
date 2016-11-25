@@ -23,6 +23,9 @@ func main()  {
     router.POST("/api/login", loginHandler)
     router.DELETE("/api/logout", logoutHandler)
 
+    router.POST("/api/facebook", facebookHandler)
+    router.POST("/api/google", googleHandler)
+
     router.GET("/api/profile", getProfileHandler)
     router.POST("/api/profile", setprofileHandler)
 
