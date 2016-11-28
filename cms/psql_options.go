@@ -4,15 +4,8 @@ import (
   "fmt"
   "reflect"
   "strconv"
-  "database/sql"
   _ "github.com/lib/pq"
 )
-
-var db *sql.DB
-
-func connectPSQL() {
-    db, _ = sql.Open("postgres", "user=postgres dbname=mithun sslmode=disable password=postgres")
-}
 
 func fetchOptions(choice int, options_count int) Options{
     var option Options

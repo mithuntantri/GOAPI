@@ -46,6 +46,11 @@ func main()  {
 
     router.GET("/api/slots", getSlotsHandler)
 
+    router.GET("/api/product/categories", getCategoriesHandler)
+    router.GET("/api/product/init", initProductHandler)
+    router.GET("/api/product/options", getOptionsHandler)
+    router.POST("/api/product/options", setValueHandler)
+
     router.Run(":3333")
 }
 func checkErr(err error) {

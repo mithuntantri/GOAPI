@@ -71,8 +71,11 @@ func makeOptionsList() ([]string,[]int){
   return optionsList, optionsCount
 }
 func initProductHandler(c *gin.Context)  {
+  var request struct{
+    Mobileno string `form:"mobileno"`
+  }
+  if c.Bind(&request) == nil{
     var optionsList, optionsCount = makeOptionsList()
-
     var common_set Set
     var initdata initData
     initdata.Hash, _ = Generate(`[a-Z]{20}`)
@@ -90,9 +93,10 @@ func initProductHandler(c *gin.Context)  {
       }
       initdata.Data = append(initdata.Data, common_set)
     }
-    insertNewHash(initdata.Hash)
+    insertNewHash(initdata.Hash, request.Mobileno)
     c.JSON(200, gin.H{
       "status": "success",
       "data": initdata,
     })
+  }
 }

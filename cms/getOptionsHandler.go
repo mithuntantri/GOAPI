@@ -7,6 +7,7 @@ import (
 func getOptionsHandler(c *gin.Context)  {
   var request struct{
     Hash string `form:"hash" binding:"required"`
+    Mobileno string `form:"mobileno" binding:"required"`
   }
   if c.Bind(&request) == nil{
     var optionsList, optionsCount = makeOptionsList()
@@ -29,7 +30,7 @@ func getOptionsHandler(c *gin.Context)  {
       }
       initdata.Data = append(initdata.Data, common_set)
     }
-    insertNewHash(initdata.Hash)
+    insertNewHash(initdata.Hash, request.Mobileno)
     c.JSON(200, gin.H{
       "status": "success",
       "data": initdata,
