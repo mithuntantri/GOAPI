@@ -6,14 +6,16 @@ import (
 
 func facebookHandler(c *gin.Context)  {
   var request struct{
-    ClientID string `json:"clientId"`
-    Code string `json:"code"`
-    RedirectUri string `json:"redirectUri"`
-    State string `json:"state"`
+    FacebookID string `form:"facebook_id" binding:"required"`
   }
   if c.Bind(&request) == nil{
+    exists := false
+    if checkIfFBID(request.FacebookID){
+      exists = true
+    }
     c.JSON(200, gin.H{
       "status" : "success",
+      "exists" : exists,
     })
   }
 }

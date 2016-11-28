@@ -72,6 +72,18 @@ func verifySignupHandler(c *gin.Context)  {
               },
             })
           }
+        }else{
+          c.JSON(200, gin.H{
+            "status":"failed",
+            "message":"",
+            "data":map[string]interface{}{
+              "validUser": true,
+              "password_set" :  true,
+              "profile_set" : false,
+              "first_time_login" :  true,
+              "secret":"",
+            },
+          })
         }
     }else if !registered {
       c.JSON(200, gin.H{

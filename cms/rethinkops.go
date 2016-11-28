@@ -17,6 +17,8 @@ type newRegistration struct {
   Blocked   bool    `gorethink:"is_blocked"`
   ReferredID  string    `gorethink:"referred_id"`
   ClientID string `gorethink:"client_id"`
+  FBID string `gorthink:"fb_id"`
+  Gender string `gorethink:"gender"`
 }
 type loginTokens struct {
   ID string `gorethink:"id, omitempty"`
@@ -131,7 +133,7 @@ func getReferredID(mobileno string) string{
   return n.ReferredID
 }
 //handles request for new otp
-func createRegistration(mobileno, email_id, password, client_id, referred_id string) bool{
+func createRegistration(mobileno, email_id, password, client_id, referred_id, fb_id, gender string) bool{
   inserr := r.DB("mithun").Table("newRegistrations").Insert(newRegistration{
     Id: mobileno,
     Mobileno: mobileno,
@@ -141,6 +143,8 @@ func createRegistration(mobileno, email_id, password, client_id, referred_id str
     ClientID : client_id,
     Password : password,
     EmailID : email_id,
+    FBID : fb_id,
+    Gender : gender,
     }).Exec(session)
   checkErr(inserr)
   return true

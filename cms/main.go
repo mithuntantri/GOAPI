@@ -51,6 +51,9 @@ func main()  {
     router.GET("/api/product/options", getOptionsHandler)
     router.POST("/api/product/options", setValueHandler)
 
+    router.POST("/api/cart", addtoCartHandler)
+    router.GET("/api/cart", getCartHandler)
+
     router.Run(":3333")
 }
 func checkErr(err error) {

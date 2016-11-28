@@ -11,6 +11,8 @@ func signupHandler(c *gin.Context)  {
     Mobileno    string `json:"mobileno"`
     ClientID    string `json:"client_id"`
     ReferralID  string `json:"referral_id"`
+    FBID        string `json:"fb_id"`
+    Gender      string `json:"gender"`
   }
   if c.Bind(&request) == nil{
     isNewMobileNo := false
@@ -30,7 +32,7 @@ func signupHandler(c *gin.Context)  {
             if response = callnewOTP(request.Mobileno, "n"); response{
               //Create an Entry in New registrations
               hashedPass := bcryptPassword(request.Password)
-              createRegistration(request.Mobileno, request.EmailID, hashedPass, request.ClientID, request.ReferralID)
+              createRegistration(request.Mobileno, request.EmailID, hashedPass, request.ClientID, request.ReferralID, request.FBID, request.Gender)
             }
             c.JSON(200, gin.H{
               "status" : "success",
