@@ -17,6 +17,8 @@ type newRegistration struct {
   Blocked   bool    `gorethink:"is_blocked"`
   ReferredID  string    `gorethink:"referred_id"`
   ClientID string `gorethink:"client_id"`
+  FirstName string `gorethink:"firstname"`
+  LastName string `gorethink:"lastname"`
   FBID string `gorthink:"fb_id"`
   Gender string `gorethink:"gender"`
 }
@@ -117,13 +119,13 @@ func checkRegistrationExists(mobileno string) (bool, bool, bool){
     return true, n.Blocked, n.Verified
   }
 }
-func getRegistrationDetails(mobileno string) (string, string, string, string){
+func getRegistrationDetails(mobileno string) (string, string, string, string, string, string, string){
   fmt.Println("Fetching Details to permenantly add to DB")
   curr, _ := r.DB("mithun").Table("newRegistrations").Get(mobileno).Run(session)
   var n newRegistration
   curr.One(&n)
   curr.Close()
-  return n.EmailID, n.ClientID, n.Password, n.FBID
+  return n.EmailID, n.ClientID, n.Password, n.FBID, n.FirstName, n.LastName, n.Gender
 }
 func getReferredID(mobileno string) string{
   curr, _ := r.DB("mithun").Table("newRegistrations").Get(mobileno).Run(session)
@@ -133,7 +135,7 @@ func getReferredID(mobileno string) string{
   return n.ReferredID
 }
 //handles request for new otp
-func createRegistration(mobileno, email_id, password, client_id, referred_id, fb_id, gender string) bool{
+func createRegistration(mobileno, email_id, password, client_id, referred_id, fb_id, firstname, lastname, gender string) bool{
   inserr := r.DB("mithun").Table("newRegistrations").Insert(newRegistration{
     Id: mobileno,
     Mobileno: mobileno,
@@ -144,6 +146,8 @@ func createRegistration(mobileno, email_id, password, client_id, referred_id, fb
     Password : password,
     EmailID : email_id,
     FBID : fb_id,
+    FirstName : firstname,
+    LastName : lastname,
     Gender : gender,
     }).Exec(session)
   checkErr(inserr)

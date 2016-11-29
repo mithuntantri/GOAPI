@@ -1,6 +1,7 @@
 package main
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
 )
 
@@ -34,11 +35,18 @@ func getProfileHandler(c *gin.Context)  {
       response, referral_id, wallet_id := getProfile(request.Mobileno)
       referral_credits, profile_credits, promo_credits := getWallet(wallet_id)
       if response.Mobileno == "" {
-        c.JSON(200, gin.H{
-          "status" : "failed",
-          "message" : "No Profile Exists",
-        })
-        return
+        mobileno := getMobileNumberFromEmail(request.Mobileno)
+        fmt.Println("Fetching mobileno", mobileno)
+        if mobileno == ""{
+          c.JSON(200, gin.H{
+            "status" : "failed",
+            "message" : "No Profile Exists",
+          })
+          return
+        }else{
+          response, referral_id, wallet_id = getProfile(mobileno)
+          referral_credits, profile_credits, promo_credits = getWallet(wallet_id)
+        }
       }
       c.JSON(200, gin.H{
         "status" : "success",

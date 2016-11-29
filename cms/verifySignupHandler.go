@@ -52,14 +52,25 @@ func verifySignupHandler(c *gin.Context)  {
           createWalletID(walletID)
           createReferralID(referralID, walletID)
 
-          walletID = updateReferralTable(ReferredID)
-          updateWallet(walletID, "referral_credits")
+          walletRefID := updateReferralTable(ReferredID)
+          updateWallet(walletRefID, "referral_credits")
 
-          EmailID, ClientID, hashedPass, FBID := getRegistrationDetails(request.Mobileno)
+          EmailID, ClientID, hashedPass, FBID, FirstName, LastName, Gender := getRegistrationDetails(request.Mobileno)
+          var profileRequest = profileRequest{
+            Mobileno : request.Mobileno,
+            EmailID : EmailID,
+            ClientID : ClientID,
+            FirstName : FirstName,
+            LastName : LastName,
+            Gender : Gender,
+          }
           if addtoCredentials(request.Mobileno, EmailID, true, false, ClientID, hashedPass){
             logintoken := generateToken(request.Mobileno, ClientID, true)
             inserr := createNewToken(logintoken.ID, logintoken.ClientID, logintoken.Token, mobile_device)
-            insertFbIDMap(request.Mobileno, FBID)
+            if FBID != ""{
+              insertFbIDMap(request.Mobileno, FBID)
+            }
+            createProfile(profileRequest, referralID, walletID, ReferredID)
             sendEmailVerification(request.Mobileno, ClientID, EmailID)
             c.JSON(200, gin.H{
               "status":"success",
