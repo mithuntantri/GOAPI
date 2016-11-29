@@ -1,4 +1,3 @@
-DELETE FROM clients;
 DELETE FROM profile;
 DELETE FROM username_map;
 DELETE FROM fbid_map;
@@ -12,3 +11,4 @@ DELETE FROM coupons;
 DELETE FROM options;
 DELETE FROM mode;
 DELETE FROM orders;
+DELETE FROM clients;

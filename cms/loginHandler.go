@@ -30,6 +30,7 @@ func loginHandler(c *gin.Context)  {
     }
     credentialsExist := false
     ID_is_email := false
+
     if credentialsExist = checkCredentials(request.ID, request.ClientID, request.Password, true);!credentialsExist{
       credentialsExist = checkCredentials(request.ID, request.ClientID, request.Password, false)
       ID_is_email = credentialsExist
@@ -37,8 +38,8 @@ func loginHandler(c *gin.Context)  {
     if !credentialsExist && !request.OtpLogin{
       if !checkIfEmailID(request.ID){
         if !checkIfUsername(request.ID){
-          isFblogin := !checkIfFBID(request.ID)
-          if !isFblogin && request.FBLogin {
+          isFblogin := checkIfFBID(request.ID)
+          if !isFblogin && !request.FBLogin {
             c.JSON(200, gin.H{
               "status" : "success",
               "message" : "",

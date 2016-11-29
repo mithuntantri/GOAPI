@@ -18,13 +18,14 @@ func main()  {
     router.POST("/api/signup/resend", resendSignupHandler)
     router.POST("/api/setpassword", setpaswordHandler)
 
-    router.POST("/api/verifyemail", verifyEmailIDHandler)
+    router.GET("/api/verifyemail", verifyEmailIDHandler)
+    router.GET("/api/resendemail", resendEmailVerificationHandler)
 
     router.POST("/api/login", loginHandler)
     router.DELETE("/api/logout", logoutHandler)
 
-    router.POST("/api/facebook", facebookHandler)
-    router.POST("/api/google", googleHandler)
+    router.GET("/api/facebook", facebookHandler)
+    router.GET("/api/google", googleHandler)
 
     router.GET("/api/profile", getProfileHandler)
     router.POST("/api/profile", setprofileHandler)

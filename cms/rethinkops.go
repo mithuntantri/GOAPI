@@ -117,13 +117,13 @@ func checkRegistrationExists(mobileno string) (bool, bool, bool){
     return true, n.Blocked, n.Verified
   }
 }
-func getRegistrationDetails(mobileno string) (string, string, string){
+func getRegistrationDetails(mobileno string) (string, string, string, string){
   fmt.Println("Fetching Details to permenantly add to DB")
   curr, _ := r.DB("mithun").Table("newRegistrations").Get(mobileno).Run(session)
   var n newRegistration
   curr.One(&n)
   curr.Close()
-  return n.EmailID, n.ClientID, n.Password
+  return n.EmailID, n.ClientID, n.Password, n.FBID
 }
 func getReferredID(mobileno string) string{
   curr, _ := r.DB("mithun").Table("newRegistrations").Get(mobileno).Run(session)

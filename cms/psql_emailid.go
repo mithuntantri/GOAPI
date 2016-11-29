@@ -13,7 +13,7 @@ func insertEmailMap(mobileno, email_id string) bool{
 
 func checkIfEmailID(email_id string) bool{
   var count int8
-  db.QueryRow("SELECT COUNT(*) FROM emailid_map WHERE email_id=$1",email_id).Scan(&count)
+  db.QueryRow("SELECT COUNT(*) FROM credentials WHERE email_id=$1",email_id).Scan(&count)
   if count == 0 {
     return false
   }else{

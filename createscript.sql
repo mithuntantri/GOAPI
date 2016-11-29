@@ -218,14 +218,6 @@ CREATE TABLE "username_map" (
   OIDS=FALSE
 );
 
-CREATE TABLE "emailid_map" (
-	"email_id" varchar(127) NOT NULL,
-	"mobileno" varchar(10) NOT NULL,
-	CONSTRAINT emailid_map_pk PRIMARY KEY ("email_id")
-) WITH (
-   OIDS=FALSE
-);
-
 
 ALTER TABLE "profile" ADD CONSTRAINT "profile_fk0" FOREIGN KEY ("client_id") REFERENCES "clients"("client_id");
 ALTER TABLE "profile" ADD CONSTRAINT "profile_fk1" FOREIGN KEY ("referral_id") REFERENCES "referral"("referral_id");
@@ -234,8 +226,6 @@ ALTER TABLE "profile" ADD CONSTRAINT "profile_fk2" FOREIGN KEY ("wallet_id") REF
 
 
 ALTER TABLE "referral" ADD CONSTRAINT "referral_fk0" FOREIGN KEY ("wallet_id") REFERENCES "wallet"("wallet_id");
-
-ALTER TABLE "emailid_map" ADD CONSTRAINT "emailid_map_fk0" FOREIGN KEY ("mobileno") REFERENCES "credentials"("mobileno");
 
 ALTER TABLE "fbid_map" ADD CONSTRAINT "fbid_map_fk0" FOREIGN KEY ("mobileno") REFERENCES "credentials"("mobileno");
 
