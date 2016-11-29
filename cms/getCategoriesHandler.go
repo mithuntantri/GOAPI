@@ -8,7 +8,9 @@ type Categories struct{
   Descriptions []Description  `json:"description"`
 }
 type Description struct{
-  Name string `json:"name"`
+  Header string `json:"heading"`
+  Description string `json:"description"`
+  Link string `json:"link"`
   Img string `json:"img"`
 }
 func getCategoriesHandler(c *gin.Context)  {
@@ -18,37 +20,58 @@ func getCategoriesHandler(c *gin.Context)  {
     var category1, category2 Categories
 
     var desc1 = Description{
-      Name : "Custom Shirts",
+      Header : "TRENDING NOW",
+      Description : "Custom Shirts @ Rs. 699 Only",
+      Link : "SHOP",
       Img : "/img/custom_shirts.jpg",
     }
     var desc2 = Description{
-      Name : "Womenswear",
-      Img : "/img/womenswear.jpg",
+      Header : "EXCLUSIVE OFFER",
+      Description : "Refer & Earn Zigfo Credits",
+      Link : "SIGN UP",
+      Img : "/img/credits.png",
     }
     var desc3 = Description{
-      Name : "Fabrics",
-      Img : "/img/fabrics.jpg",
+      Header : "SHOP ON THE GO",
+      Description : "Additional 10% off on app",
+      Link : "DOWNLOAD NOW",
+      Img : "/img/download_app.png",
     }
     var desc4 = Description{
-      Name : "Men's Fashion",
-      Img : "",
+      Header : "TOP COUPONS",
+      Description : "Flat Rs.100 Off on First Order",
+      Link : "BUY NOW",
+      Img : "/img/top_coupons.jpg",
     }
     var desc5 = Description{
-      Name : "Women's Fashion",
-      Img : "",
+      Header : "TAILOR MADE CUSTOM SHIRTS",
+      Description : "Customize & Get Home Delivered Men's Formal",
+      Link : "ORDER NOW",
+      Img : "/img/slider1.jpg",
     }
     var desc6 = Description{
-      Name : "Suits",
-      Img : "",
+      Header : "TAILOR MADE CUSTOM SHIRTS",
+      Description : "Customize & Get Home Delivered Men's Formal",
+      Link : "ORDER NOW",
+      Img : "/img/slider2.jpg",
     }
     var desc7 = Description{
-      Name : "Accessories",
-      Img : "",
+      Header : "TAILOR MADE CUSTOM SHIRTS",
+      Description : "Customize & Get Home Delivered Men's Formal",
+      Link : "ORDER NOW",
+      Img : "/img/slider3.jpg",
     }
+    var desc8 = Description{
+      Header : "TAILOR MADE CUSTOM SHIRTS",
+      Description : "Customize & Get Home Delivered Men's Formal",
+      Link : "ORDER NOW",
+      Img : "/img/slider4.jpg",
+    }
+
     category1.Descriptions = make([]Description, 0)
     category2.Descriptions = make([]Description, 0)
-    category1.Descriptions = append(category1.Descriptions, desc1, desc2, desc3)
-    category2.Descriptions = append(category2.Descriptions, desc4, desc5, desc6, desc7)
+    category1.Descriptions = append(category1.Descriptions, desc1, desc2, desc3, desc4)
+    category2.Descriptions = append(category2.Descriptions, desc5, desc6, desc7, desc8)
 
     category1.Category = "Top Categories"
     category2.Category = "All Categories"
