@@ -79,6 +79,7 @@ func createDB()  {
   createRegistrationstable()
   createTokenstable()
   createSalttable()
+  createDesignHashTable()
 }
 func createRegistrationstable() {
   fmt.Println("Creating the newRegistrations table")

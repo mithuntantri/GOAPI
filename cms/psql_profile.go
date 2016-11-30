@@ -19,3 +19,8 @@ func getProfile(mobileno string) (profileRequest, string, string){
   db.QueryRow("SELECT mobileno, email_id, client_id, first_name, last_name, gender, referral_id, wallet_id FROM profile WHERE mobileno=$1",mobileno).Scan(&profile.Mobileno, &profile.EmailID, &profile.ClientID, &profile.FirstName, &profile.LastName, &profile.Gender, &referral_id, &wallet_id)
   return profile, referral_id, wallet_id
 }
+
+func updateProfile(request profileRequest) bool{
+  db.QueryRow("UPDATE profile SET first_name=$2, last_name=$3, gender=$4 WHERE mobileno=$1",request.Mobileno, request.FirstName, request.LastName, request.Gender)
+  return true
+}
