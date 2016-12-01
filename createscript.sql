@@ -95,6 +95,7 @@ CREATE TABLE "orders" (
 	"order_time" bigint NOT NULL,
 	"mobileno" varchar(10) NOT NULL,
 	"product_id" varchar(30) NOT NULL,
+	"fabric_id" varchar(20) NOT NULL,
 	"design_hash" varchar(30) NOT NULL,
 	"measurement_id" varchar(8) NOT NULL,
 	"fabric_pickup" bool NOT NULL,
@@ -110,6 +111,18 @@ CREATE TABLE "orders" (
   OIDS=FALSE
 );
 
+CREATE TABLE "fabrics" (
+	"fabric_id" varchar(20) NOT NULL,
+	"brand" varchar(30) NOT NULL,
+	"category" varchar(30) NOT NULL,
+	"quality" varchar(30) NOT NULL,
+	"img"  varchar(127) NOT NULL,
+	"quantity" float4 NOT NULL,
+	"rate" float4 NOT NULL,
+	CONSTRAINT fabrics_pk PRIMARY KEY ("fabric_id")
+) WITH (
+	OIDS=FALSE
+);
 
 
 CREATE TABLE "address" (

@@ -65,3 +65,5 @@ DROP TABLE IF EXISTS "slots";
 DROP TABLE IF EXISTS "credentials";
 
 DROP TABLE IF EXISTS "username_map";
+
+DROP TABLE IF EXISTS "fabrics";

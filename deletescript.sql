@@ -12,3 +12,4 @@ DELETE FROM options;
 DELETE FROM mode;
 DELETE FROM orders;
 DELETE FROM clients;
+DELETE FROM fabrics;

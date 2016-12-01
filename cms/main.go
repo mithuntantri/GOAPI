@@ -56,6 +56,9 @@ func main()  {
     router.POST("/api/cart", addtoCartHandler)
     router.GET("/api/cart", getCartHandler)
 
+    router.GET("/api/fabrics/filter", getFabricsFilterHandler)
+    router.GET("/api/fabrics", getFabricsHandler)
+
     router.Run(":3333")
 }
 func checkErr(err error) {

@@ -14,6 +14,21 @@ INSERT INTO slots (slot_id, slot_name) VALUES ('slot4', '3:00 PM to 5:00 PM');
 INSERT INTO slots (slot_id, slot_name) VALUES ('slot5', '5:00 PM to 7:00 PM');
 INSERT INTO slots (slot_id, slot_name) VALUES ('slot6', '7:00 PM to 9:00 PM');
 
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f01', 'Raymonds', 'Men Shirts', 'ZIGFO ASSURED', '/img/f01.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f02', 'Raymonds', 'Women Shirts', 'ZIGFO ASSURED', '/img/f02.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f03', 'Raymonds', 'Women Shirts', 'ZIGFO ASSURED', '/img/f03.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f04', 'Raymonds', 'Men Shirts', 'ZIGFO ASSURED', '/img/f04.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f05', 'Raymonds', 'Men Shirts', 'ZIGFO ASSURED', '/img/f05.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f06', 'Arvind', 'Men Shirts', 'ZIGFO ASSURED', '/img/f06.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f07', 'Calvin Klein', 'Men Shirts', 'ZIGFO ASSURED', '/img/f07.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f08', 'Raymonds', 'Men Shirts', 'ZIGFO ASSURED', '/img/f08.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f09', 'Calvin Klein', 'Men Suits', 'ZIGFO ASSURED', '/img/f09.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f10', 'Arvind', 'Men Shirts', 'ZIGFO ASSURED', '/img/f10.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f11', 'Raymonds', 'Men Suits', 'ZIGFO ASSURED', '/img/f11.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f12', 'Raymonds', 'Men Suits', 'ZIGFO ASSURED', '/img/f12.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f13', 'Zigfo', 'Men Shirts', 'ZIGFO ASSURED', '/img/f13.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f14', 'Raymonds', 'Men Shirts', 'ZIGFO ASSURED', '/img/f14.jpg', 100, 100);
+INSERT INTO fabrics (fabric_id, brand, category, quality, img, quantity, rate) VALUES ('f15', 'Calvin Klein', 'Men Shirts', 'ZIGFO ASSURED', '/img/f15.jpg', 100, 100);
 -- INSERT INTO credentials (mobileno, client_id, password) VALUES ('1111111111', '3', 'mithun');
 -- INSERT INTO credentials (mobileno, client_id, password) VALUES ('1111111112', '3', 'mithun');
 --
