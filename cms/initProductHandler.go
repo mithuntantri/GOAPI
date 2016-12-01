@@ -52,6 +52,8 @@ type DesignShirt struct{
 type initData struct{
   Hash string `json:"hash"`
   TotalPrice string `json:"total_price"`
+  Favorites bool `json:"favorites"`
+  CheckedOut bool `json:"cheked_out"`
   Data []Set `json:"all_options"`
 }
 func makeOptionsList() ([]string,[]int){
@@ -79,7 +81,9 @@ func initProductHandler(c *gin.Context)  {
     var common_set Set
     var initdata initData
     initdata.Hash, _ = Generate(`[a-Z]{20}`)
-    initdata.TotalPrice = "700.00"
+    initdata.TotalPrice = "699.00"
+    initdata.Favorites = false
+    initdata.CheckedOut = false
     initdata.Data = make([]Set, 0)
     for i:=0;i<=9;i++{
       common_set.Key = strconv.Itoa(i+1)

@@ -59,6 +59,9 @@ func main()  {
     router.GET("/api/fabrics/filter", getFabricsFilterHandler)
     router.GET("/api/fabrics", getFabricsHandler)
 
+    router.PUT("/api/favorites", addtoFavoritesHandler)
+    router.DELETE("/api/favorites", removefromFavoritesHandler)
+
     router.Run(":3333")
 }
 func checkErr(err error) {

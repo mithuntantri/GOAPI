@@ -5,6 +5,7 @@ import (
   "github.com/gin-gonic/gin"
 )
 type Fabrics struct{
+  FabricID string `json:"fabric_id"`
   Brand string `json:"brand"`
   Category string `json:"category"`
   Quality string `json:"quality"`

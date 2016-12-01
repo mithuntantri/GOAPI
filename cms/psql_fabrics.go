@@ -28,13 +28,13 @@ func getAllFabricsFilter(column_name string) Result{
 }
 func getAllFabrics() []Fabrics{
   Result := make([]Fabrics, 0)
-  rows, err := db.Query("SELECT brand, category, quality, img, quantity, rate FROM fabrics")
+  rows, err := db.Query("SELECT fabric_id, brand, category, quality, img, quantity, rate FROM fabrics")
   if err != nil{
     checkErr(err)
   }
   for rows.Next(){
     var f Fabrics
-    if err := rows.Scan(&f.Brand, &f.Category, &f.Quality, &f.Img, &f.Quantity, &f.Rate);err != nil{
+    if err := rows.Scan(&f.FabricID, &f.Brand, &f.Category, &f.Quality, &f.Img, &f.Quantity, &f.Rate);err != nil{
       checkErr(err)
     }else{
       Result  = append(Result, f)
@@ -77,18 +77,18 @@ func getFilteredFabrics(brand, category, quality string, apply_brand, apply_cate
   var rows *sql.Rows
   var err error
   if number == 1{
-    rows, err = db.Query(fmt.Sprintf("SELECT brand, category, quality, img, quantity, rate FROM fabrics WHERE %s=$1",QuoteIdentifier(column1)),column1_value)
+    rows, err = db.Query(fmt.Sprintf("SELECT fabric_id, brand, category, quality, img, quantity, rate FROM fabrics WHERE %s=$1",QuoteIdentifier(column1)),column1_value)
   }else if number == 2{
-    rows, err = db.Query(fmt.Sprintf("SELECT brand, category, quality, img, quantity, rate FROM fabrics WHERE %s=$1 AND %s=$2",QuoteIdentifier(column1),QuoteIdentifier(column2)),column1_value,column2_value)
+    rows, err = db.Query(fmt.Sprintf("SELECT fabric_id, brand, category, quality, img, quantity, rate FROM fabrics WHERE %s=$1 AND %s=$2",QuoteIdentifier(column1),QuoteIdentifier(column2)),column1_value,column2_value)
   }else {
-    rows, err = db.Query(fmt.Sprintf("SELECT brand, category, quality, img, quantity, rate FROM fabrics WHERE %s=$1 AND %s=$2 AND %s=$3",QuoteIdentifier(column1),QuoteIdentifier(column2),QuoteIdentifier(column3)),column1_value,column2_value,column3_value)
+    rows, err = db.Query(fmt.Sprintf("SELECT fabric_id, brand, category, quality, img, quantity, rate FROM fabrics WHERE %s=$1 AND %s=$2 AND %s=$3",QuoteIdentifier(column1),QuoteIdentifier(column2),QuoteIdentifier(column3)),column1_value,column2_value,column3_value)
   }
   if err != nil{
     checkErr(err)
   }
   for rows.Next(){
     var f Fabrics
-    if err := rows.Scan(&f.Brand, &f.Category, &f.Quality, &f.Img, &f.Quantity, &f.Rate);err != nil{
+    if err := rows.Scan(&f.FabricID, &f.Brand, &f.Category, &f.Quality, &f.Img, &f.Quantity, &f.Rate);err != nil{
       checkErr(err)
     }else{
       Result  = append(Result, f)

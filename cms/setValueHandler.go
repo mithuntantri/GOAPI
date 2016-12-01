@@ -15,7 +15,7 @@ func setValueHandler(c *gin.Context)  {
       "status" : "success",
       "message" : "Option Changed Successfully",
       "data":map[string]interface{}{
-        "total_price" : "700.00",
+        "total_price" : "699.00",
       },
     })
   }

@@ -57,6 +57,7 @@ type newDesignHash struct{
   TotalPrice string `gorethink:"total_price"`
   Mobileno string `gorethink:"mobileno"`
   VerifiedUser bool `gorethink:"verified_user"`
+  Favorites bool `gorethink:"favorites"`
 }
 func connectDB()  {
   var err error
@@ -358,11 +359,12 @@ func insertNewHash(hash, mobileno string)  bool{
     TotalPrice: "700.00",
     VerifiedUser : VerifiedUser,
     Mobileno : mobileno,
+    Favorites : false,
     }).Exec(session)
   checkErr(inserr)
   return true
 }
-func getDesignHash(hash string, choice , options_count int) bool{
+func getDesignHash(hash string, choice , options_count int) (bool,bool){
   var key string
   if options_count >= 10{
     var second_part = strconv.Itoa(options_count)
@@ -408,12 +410,24 @@ func getDesignHash(hash string, choice , options_count int) bool{
                   selected = true
                 }
   }
-  return selected
+  return selected, designTemp.Favorites
 }
 func checkoutHash(hash string){
   r.DB("mithun").Table("designHash").Get(hash).Update(newDesignHash{
     CheckedOut: true,
   }).Exec(session)
+}
+func addtoFav(hash string) bool{
+  r.DB("mithun").Table("designHash").Get(hash).Update(map[string]interface{}{
+    "favorites" : true,
+  }).Exec(session)
+  return true
+}
+func removefromFav(hash string) bool{
+  r.DB("mithun").Table("designHash").Get(hash).Update(map[string]interface{}{
+    "favorites" : false,
+  }).Exec(session)
+  return true
 }
 func updateHashTable(hash string, choice, option_key int)  {
   var designTemp = newDesignHash{
