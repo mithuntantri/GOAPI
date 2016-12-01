@@ -44,7 +44,7 @@ func sendEmailVerification(mobileno, client_id, email_id string)  {
   updateEmailToken(mobileno, emailToken.Token)
   url := `www.zigfo.com/confirm-email?token=` + emailToken.Token
   mail := gomail.NewMessage()
-  mail.SetHeader("From", "mithun@tradelab.in")
+  mail.SetHeader("From", "mithun@zigfo.com")
   mail.SetHeader("To", email_id)
   mail.SetHeader("Subject", "Verify Email - Access your Zigfo Account Securely")
   mail.SetBody("text/html", `
@@ -62,7 +62,7 @@ func sendEmailVerification(mobileno, client_id, email_id string)  {
       <div>Best Regards, </div>
     <div><b>Team Zigfo</b></div></div>
   `)
-  d := gomail.NewPlainDialer("smtp.gmail.com", 587, "mithun@tradelab.in", "TANTRI@myself")
+  d := gomail.NewPlainDialer("smtp.zoho.com", 587, "mithun@zigfo.com", "TANTRI@myself")
     if err := d.DialAndSend(mail); err != nil {
         panic(err)
     }
