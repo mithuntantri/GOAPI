@@ -15,6 +15,7 @@ func getOptionsHandler(c *gin.Context)  {
     var initdata initData
     initdata.Hash = request.Hash
     initdata.TotalPrice = "699.00"
+    initdata.Gender = "M"
     initdata.Data = make([]Set, 0)
     for i:=0;i<=9;i++{
       common_set.Key = strconv.Itoa(i+1)

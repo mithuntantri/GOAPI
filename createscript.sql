@@ -114,6 +114,7 @@ CREATE TABLE "orders" (
 CREATE TABLE "fabrics" (
 	"fabric_id" varchar(20) NOT NULL,
 	"brand" varchar(30) NOT NULL,
+	"gender" varchar(1) NOT NULL,
 	"category" varchar(30) NOT NULL,
 	"quality" varchar(30) NOT NULL,
 	"img"  varchar(127) NOT NULL,

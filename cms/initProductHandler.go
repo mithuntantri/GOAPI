@@ -53,6 +53,7 @@ type initData struct{
   Hash string `json:"hash"`
   TotalPrice string `json:"total_price"`
   Favorites bool `json:"favorites"`
+  Gender string `json:"gender"`
   CheckedOut bool `json:"cheked_out"`
   Data []Set `json:"all_options"`
 }
@@ -84,6 +85,7 @@ func initProductHandler(c *gin.Context)  {
     initdata.TotalPrice = "699.00"
     initdata.Favorites = false
     initdata.CheckedOut = false
+    initdata.Gender = "M"
     initdata.Data = make([]Set, 0)
     for i:=0;i<=9;i++{
       common_set.Key = strconv.Itoa(i+1)
