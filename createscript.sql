@@ -120,6 +120,8 @@ CREATE TABLE "fabrics" (
 	"img"  varchar(127) NOT NULL,
 	"quantity" float4 NOT NULL,
 	"rate" float4 NOT NULL,
+	"disc_rate" float4 NOT NULL,
+	"description" varchar(256) NOT NULL,
 	CONSTRAINT fabrics_pk PRIMARY KEY ("fabric_id")
 ) WITH (
 	OIDS=FALSE
@@ -157,6 +159,8 @@ CREATE TABLE "coupons" (
 	"only_new" BOOLEAN NOT NULL,
 	"only_first" BOOLEAN NOT NULL,
 	"only_app" BOOLEAN NOT NULL,
+	"min_amount" float4 NOT NULL,
+	"discount" float4 NOT NULL,
 	CONSTRAINT coupons_pk PRIMARY KEY ("coupon_id")
 ) WITH (
   OIDS=FALSE

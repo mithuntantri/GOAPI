@@ -32,6 +32,7 @@ func main()  {
     router.PUT("/api/profile", updateProfileHandler)
 
     router.GET("/api/coupons", getCouponsHandler)
+    router.GET("/api/coupons/validity", checkCouponHandler)
 
     router.GET("/api/address", getAddressesHandler)
     router.POST("/api/address", createAddressHandler)

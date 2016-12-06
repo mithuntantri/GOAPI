@@ -12,6 +12,8 @@ type Fabrics struct{
   Img string `json:"img"`
   Quantity float64 `json:"quantity"`
   Rate float64 `json:"rate"`
+  DiscRate float64 `json:"disc_rate"`
+  Description string `json:"description"`
 }
 func getFabricsFilterHandler(c *gin.Context){
   var brand, category, quality Result

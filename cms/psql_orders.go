@@ -19,3 +19,11 @@ func checkOrderID(order_id string) bool{
 func createOrder(order order) bool{
   return true
 }
+func isFirstOrder(mobileno string) bool{
+  var count int8
+  db.QueryRow("SELECT COUNT(*) FROM orders WHERE mobileno=$1", mobileno).Scan(&count)
+  if(count == 0){
+    return true
+  }
+  return false
+}
