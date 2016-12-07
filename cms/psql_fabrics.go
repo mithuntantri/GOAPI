@@ -48,6 +48,7 @@ func getAllFabrics() []Fabrics{
 }
 func getFilteredFabrics(brand, gender, category, quality string, apply_brand, apply_gender, apply_category, apply_quality bool) []Fabrics{
   Result := make([]Fabrics, 0)
+  number := 0
   all_brands := strings.Split(brand, ",")
   all_categories := strings.Split(category, ",")
   all_qualities := strings.Split(quality, ",")
@@ -58,6 +59,7 @@ func getFilteredFabrics(brand, gender, category, quality string, apply_brand, ap
 
   statement := "SELECT fabric_id, gender, brand, category, quality, img, quantity, rate, disc_rate, description FROM fabrics WHERE"
   if apply_brand{
+    number++
     for i:=0;i<=len(all_brands)-1;i++{
       if i==0{
         statement = statement + " (brand='"+all_brands[i]+"'"
@@ -70,7 +72,10 @@ func getFilteredFabrics(brand, gender, category, quality string, apply_brand, ap
     }
   }
   if apply_category{
-    statement = statement + " AND "
+    if number != 0{
+      statement = statement + " AND "
+    }
+    number++
     for i:=0;i<=len(all_categories)-1;i++{
       if i==0{
         statement = statement + " (category='"+all_categories[i]+"'"
@@ -83,7 +88,10 @@ func getFilteredFabrics(brand, gender, category, quality string, apply_brand, ap
     }
   }
   if(apply_quality){
-    statement = statement + " AND "
+    if number != 0{
+      statement = statement + " AND "
+    }
+    number++
     for i:=0;i<=len(all_qualities)-1;i++{
       if i==0{
         statement = statement + " (quality='"+all_qualities[i]+"'"
@@ -96,7 +104,10 @@ func getFilteredFabrics(brand, gender, category, quality string, apply_brand, ap
     }
   }
   if(apply_gender){
-    statement = statement + " AND "
+    if number != 0{
+      statement = statement + " AND "
+    }
+    number++
     for i:=0;i<=len(all_genders)-1;i++{
       if i==0{
         statement = statement + " (gender='"+all_genders[i]+"'"
