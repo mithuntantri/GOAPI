@@ -3,15 +3,16 @@ package main
 import (
   "fmt"
   "database/sql"
+  "strings"
   _ "github.com/lib/pq"
 )
 
-type Result struct{
-  Name []string `json:"name"`
+type FilterResult struct{
+  Name string `json:"name"`
+  Applied bool `json:"applied"`
 }
-func getAllFabricsFilter(column_name string) Result{
-  var Result Result
-  Result.Name = make([]string, 0)
+func getAllFabricsFilter(column_name string) []FilterResult{
+  Result := make([]FilterResult, 0)
   rows, err := db.Query(fmt.Sprintf("SELECT DISTINCT %s FROM fabrics",QuoteIdentifier(column_name)))
   if err != nil{
     checkErr(err)
@@ -21,7 +22,10 @@ func getAllFabricsFilter(column_name string) Result{
     if err := rows.Scan(&name);err != nil{
       checkErr(err)
     }else{
-      Result.Name  = append(Result.Name, name)
+      var result FilterResult
+      result.Name = name
+      result.Applied = false
+      Result  = append(Result, result)
     }
   }
   return Result
@@ -44,65 +48,68 @@ func getAllFabrics() []Fabrics{
 }
 func getFilteredFabrics(brand, gender, category, quality string, apply_brand, apply_gender, apply_category, apply_quality bool) []Fabrics{
   Result := make([]Fabrics, 0)
-  number := 0
-  fmt.Println(brand, gender, category, quality, apply_brand, apply_gender, apply_category, apply_quality)
-  var column1, column2, column3, column4, column1_value, column2_value, column3_value, column4_value string
-  if apply_brand{
-    number++
-    column1 = "brand"
-    column1_value = brand
-  }
-  if apply_category{
-    number++
-    if column1 != ""{
-      column2 = "category"
-      column2_value = category
-    }else{
-      column1 = "category"
-      column1_value = category
-    }
-  }
-  if apply_quality{
-    number++
-    if column1 == ""{
-      column1 = "quality"
-      column1_value = quality
-    }else if column2 == ""{
-      column2 = "quality"
-      column2_value = quality
-    }else{
-      column3 = "quality"
-      column3_value = quality
-    }
-  }
-  if apply_gender{
-    number++
-    if column1 == ""{
-      column1 ="gender"
-      column1_value = gender
-    }else if column2 == ""{
-      column2 = "gender"
-      column2_value = gender
-    }else if column3 == ""{
-      column3 = "gender"
-      column3_value = gender
-    }else{
-      column4 = "gender"
-      column4_value = gender
-    }
-  }
-  fmt.Println(column1, column2, column3, column4, column1_value, column2_value, column3_value, column4_value)
+  all_brands := strings.Split(brand, ",")
+  all_categories := strings.Split(category, ",")
+  all_qualities := strings.Split(quality, ",")
+  all_genders := strings.Split(gender, ",")
+
   var rows *sql.Rows
   var err error
-  if number == 1{
-    rows, err = db.Query(fmt.Sprintf("SELECT fabric_id, gender, brand, category, quality, img, quantity, rate, disc_rate, description FROM fabrics WHERE %s=$1",QuoteIdentifier(column1)),column1_value)
-  }else if number == 2{
-    rows, err = db.Query(fmt.Sprintf("SELECT fabric_id, gender, brand, category, quality, img, quantity, rate, disc_rate, description FROM fabrics WHERE %s=$1 AND %s=$2",QuoteIdentifier(column1),QuoteIdentifier(column2)),column1_value,column2_value)
-  }else if number == 3{
-    rows, err = db.Query(fmt.Sprintf("SELECT fabric_id, gender, brand, category, quality, img, quantity, rate, disc_rate, description FROM fabrics WHERE %s=$1 AND %s=$2 AND %s=$3",QuoteIdentifier(column1),QuoteIdentifier(column2),QuoteIdentifier(column3)),column1_value,column2_value,column3_value)
-  }else{
-    rows, err = db.Query(fmt.Sprintf("SELECT fabric_id, gender, brand, category, quality, img, quantity, rate, disc_rate, description FROM fabrics WHERE %s=$1 AND %s=$2 AND %s=$3 AND %s=$4",QuoteIdentifier(column1),QuoteIdentifier(column2),QuoteIdentifier(column3), QuoteIdentifier(column4)),column1_value,column2_value,column3_value,column4_value)
+
+  statement := "SELECT fabric_id, gender, brand, category, quality, img, quantity, rate, disc_rate, description FROM fabrics WHERE"
+  if apply_brand{
+    for i:=0;i<=len(all_brands)-1;i++{
+      if i==0{
+        statement = statement + " (brand='"+all_brands[i]+"'"
+      }else{
+        statement = statement + " OR brand='"+all_brands[i]+"'"
+      }
+      if i==len(all_brands)-1{
+        statement = statement + ")"
+      }
+    }
   }
+  if apply_category{
+    statement = statement + " AND "
+    for i:=0;i<=len(all_categories)-1;i++{
+      if i==0{
+        statement = statement + " (category='"+all_categories[i]+"'"
+      }else{
+        statement = statement + " OR category='"+all_categories[i]+"'"
+      }
+      if(i==len(all_categories)-1){
+        statement = statement + ")"
+      }
+    }
+  }
+  if(apply_quality){
+    statement = statement + " AND "
+    for i:=0;i<=len(all_qualities)-1;i++{
+      if i==0{
+        statement = statement + " (quality='"+all_qualities[i]+"'"
+      }else{
+        statement = statement + " OR quality='"+all_qualities[i]+"'"
+      }
+      if(i==len(all_qualities)-1){
+        statement = statement + ")"
+      }
+    }
+  }
+  if(apply_gender){
+    statement = statement + " AND "
+    for i:=0;i<=len(all_genders)-1;i++{
+      if i==0{
+        statement = statement + " (gender='"+all_genders[i]+"'"
+      }else{
+        statement = statement + " OR gender='"+all_genders[i]+"'"
+      }
+      if(i==len(all_genders)-1){
+        statement = statement + ")"
+      }
+    }
+  }
+  fmt.Println(statement)
+  rows, err = db.Query(statement)
   if err != nil{
     checkErr(err)
   }

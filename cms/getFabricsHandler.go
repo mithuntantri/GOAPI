@@ -16,17 +16,21 @@ type Fabrics struct{
   Description string `json:"description"`
 }
 func getFabricsFilterHandler(c *gin.Context){
-  var brand, category, quality Result
-  brand = getAllFabricsFilter("brand")
-  category = getAllFabricsFilter("category")
-  quality = getAllFabricsFilter("quality")
+  var data struct{
+    Brand []FilterResult `json:"brand"`
+    Category []FilterResult `json:"category"`
+    Gender []FilterResult `json:"gender"`
+    Quality []FilterResult `json:"quality"`
+  }
+
+  data.Brand = getAllFabricsFilter("brand")
+  data.Category = getAllFabricsFilter("category")
+  data.Quality = getAllFabricsFilter("quality")
+  data.Gender = getAllFabricsFilter("gender")
+
   c.JSON(200, gin.H{
     "status" : "success",
-    "data" : map[string]interface{}{
-      "brand" : brand,
-      "category" : category,
-      "quality" : quality,
-    },
+    "data" : data,
   })
 }
 func getFabricsHandler(c *gin.Context)  {
