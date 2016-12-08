@@ -32,13 +32,13 @@ func getAllFabricsFilter(column_name string) []FilterResult{
 }
 func getAllFabrics() []Fabrics{
   Result := make([]Fabrics, 0)
-  rows, err := db.Query("SELECT fabric_id, gender, brand, category, quality, img, quantity, rate, disc_rate, description FROM fabrics")
+  rows, err := db.Query("SELECT fabric_id, gender, brand, category, material, quality, img1, img2, quantity, rate, disc_rate, title, description FROM fabrics")
   if err != nil{
     checkErr(err)
   }
   for rows.Next(){
     var f Fabrics
-    if err := rows.Scan(&f.FabricID, &f.Gender, &f.Brand, &f.Category, &f.Quality, &f.Img, &f.Quantity, &f.Rate, &f.DiscRate, &f.Description);err != nil{
+    if err := rows.Scan(&f.FabricID, &f.Gender, &f.Brand, &f.Category, &f.Material, &f.Quality, &f.Img1, &f.Img2, &f.Quantity, &f.Rate, &f.DiscRate, &f.Title, &f.Description);err != nil{
       checkErr(err)
     }else{
       Result  = append(Result, f)
@@ -46,18 +46,19 @@ func getAllFabrics() []Fabrics{
   }
   return Result
 }
-func getFilteredFabrics(brand, gender, category, quality string, apply_brand, apply_gender, apply_category, apply_quality bool) []Fabrics{
+func getFilteredFabrics(brand, gender, category, quality, material string, apply_brand, apply_gender, apply_category, apply_quality, apply_material bool) []Fabrics{
   Result := make([]Fabrics, 0)
   number := 0
   all_brands := strings.Split(brand, ",")
   all_categories := strings.Split(category, ",")
   all_qualities := strings.Split(quality, ",")
   all_genders := strings.Split(gender, ",")
+  all_materials := strings.Split(material, ",")
 
   var rows *sql.Rows
   var err error
 
-  statement := "SELECT fabric_id, gender, brand, category, quality, img, quantity, rate, disc_rate, description FROM fabrics WHERE"
+  statement := "SELECT fabric_id, gender, brand, category, material, quality, img1, img2, quantity, rate, disc_rate, title, description FROM fabrics WHERE"
   if apply_brand{
     number++
     for i:=0;i<=len(all_brands)-1;i++{
@@ -119,6 +120,22 @@ func getFilteredFabrics(brand, gender, category, quality string, apply_brand, ap
       }
     }
   }
+  if(apply_material){
+    if number != 0{
+      statement = statement + " AND "
+    }
+    number++
+    for i:=0;i<=len(all_materials)-1;i++{
+      if i==0{
+        statement = statement + " (material='"+all_materials[i]+"'"
+      }else{
+        statement = statement + " OR material='"+all_materials[i]+"'"
+      }
+      if(i==len(all_materials)-1){
+        statement = statement + ")"
+      }
+    }
+  }
   fmt.Println(statement)
   rows, err = db.Query(statement)
   if err != nil{
@@ -126,7 +143,7 @@ func getFilteredFabrics(brand, gender, category, quality string, apply_brand, ap
   }
   for rows.Next(){
     var f Fabrics
-    if err := rows.Scan(&f.FabricID,&f.Gender, &f.Brand, &f.Category, &f.Quality, &f.Img, &f.Quantity, &f.Rate, &f.DiscRate, &f.Description);err != nil{
+    if err := rows.Scan(&f.FabricID,&f.Gender, &f.Brand, &f.Category, &f.Material, &f.Quality, &f.Img1, &f.Img2, &f.Quantity, &f.Rate, &f.DiscRate, &f.Title, &f.Description);err != nil{
       checkErr(err)
     }else{
       Result  = append(Result, f)

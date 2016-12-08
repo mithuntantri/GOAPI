@@ -116,11 +116,14 @@ CREATE TABLE "fabrics" (
 	"brand" varchar(30) NOT NULL,
 	"gender" varchar(1) NOT NULL,
 	"category" varchar(30) NOT NULL,
+	"material" varchar(30) NOT NULL,
 	"quality" varchar(30) NOT NULL,
-	"img"  varchar(127) NOT NULL,
+	"img1"  varchar(127) NOT NULL,
+	"img2" varchar(127) NOT NULL,
 	"quantity" float4 NOT NULL,
 	"rate" float4 NOT NULL,
 	"disc_rate" float4 NOT NULL,
+	"title" varchar(127) NOT NULL,
 	"description" varchar(256) NOT NULL,
 	CONSTRAINT fabrics_pk PRIMARY KEY ("fabric_id")
 ) WITH (
