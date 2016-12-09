@@ -7,10 +7,10 @@ import (
   "io/ioutil"
   "net/http"
 )
-func callnewOTP(mobileno, reqType string) bool{
+func callnewOTP(email_id, mobileno, reqType string) bool{
     url := "http://127.0.0.1:2000/otp/create"
-    request := fmt.Sprintf("{\"mobileno\":\"%s\", \"request_type\":\"%s\"}",
-        mobileno, reqType)
+    request := fmt.Sprintf("{\"email_id\":\"%s\",\"mobileno\":\"%s\", \"request_type\":\"%s\"}",
+        email_id, mobileno, reqType)
 
     req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(request)))
     req.Header.Set("Content-Type", "application/json")

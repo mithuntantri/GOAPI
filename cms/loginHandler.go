@@ -77,7 +77,7 @@ func loginHandler(c *gin.Context)  {
           })
           return
         }
-        if response := callnewOTP(request.ID, "n"); response{
+        if response := callnewOTP("",request.ID, "n"); response{
           c.JSON(200, gin.H{
             "status" : "success",
             "message" : "",

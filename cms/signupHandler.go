@@ -31,7 +31,7 @@ func signupHandler(c *gin.Context)  {
           if isValidRefCode = checkReferralID(request.ReferralID); isValidRefCode {
             //Update referral_count
             //Call OTP Server
-            if response = callnewOTP(request.Mobileno, "n"); response{
+            if response = callnewOTP(request.EmailID, request.Mobileno, "n"); response{
               //Create an Entry in New registrations
               hashedPass := bcryptPassword(request.Password)
               createRegistration(request.Mobileno, request.EmailID, hashedPass, request.ClientID, request.ReferralID, request.FBID, request.FirstName, request.LastName, request.Gender)
