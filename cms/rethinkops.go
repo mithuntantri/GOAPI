@@ -54,10 +54,16 @@ type newDesignHash struct{
   PocketLid string `gorethink:"pocket_lid"`
   BackDetails string `gorethink:"back_details"`
   BottomCut string `gorethink:"bottom_cut"`
-  TotalPrice string `gorethink:"total_price"`
+  TotalPrice float64 `gorethink:"total_price"`
   Mobileno string `gorethink:"mobileno"`
   VerifiedUser bool `gorethink:"verified_user"`
   Favorites bool `gorethink:"favorites"`
+}
+type newCartHash struct{
+  Hash string `gorethink:"hash"`
+  Mobileno string `gorthink:"mobileno"`
+  FabricIds string `gorethink:"fabric_ids"`
+  DesignHashs string `gorethink:"design_hashs"`
 }
 func connectDB()  {
   var err error
@@ -81,6 +87,7 @@ func createDB()  {
   createTokenstable()
   createSalttable()
   createDesignHashTable()
+  createCartHashTable()
 }
 func createRegistrationstable() {
   fmt.Println("Creating the newRegistrations table")
@@ -108,6 +115,23 @@ func createDesignHashTable() {
     r.DB("mithun").TableCreate("designHash"),
   ).Run(session)
   checkErr(err)
+}
+func createCartHashTable() {
+  fmt.Println("Creating the cart HashTable table")
+  _, err := r.Branch(
+    r.DB("mithun").TableList().Contains("cartHash"),
+    nil,
+    r.DB("mithun").TableCreate("cartHash"),
+  ).Run(session)
+  checkErr(err)
+}
+func checkCartHashExists(hash string) bool{
+  fmt.Println("Checking if cart hash already exists")
+  result, _ := r.DB("mithun").Table("cartHash").Get(hash).Run(session)
+  if result.IsNil(){
+    return false
+  }
+  return true
 }
 func checkRegistrationExists(mobileno string) (bool, bool, bool){
   fmt.Println("Checking if user already exists")
@@ -356,13 +380,105 @@ func insertNewHash(hash, mobileno string)  bool{
     PocketLid:"801",
     BackDetails:"901",
     BottomCut: "1001",
-    TotalPrice: "700.00",
+    TotalPrice: 700.00,
     VerifiedUser : VerifiedUser,
     Mobileno : mobileno,
     Favorites : false,
     }).Exec(session)
   checkErr(inserr)
   return true
+}
+func getDesignPrice(hash string) float64{
+  var design newDesignHash
+  curr, _ := r.DB("mithun").Table("designHash").Get(hash).Run(session)
+  curr.One(&design)
+  curr.Close()
+  return design.TotalPrice
+}
+func insertNewCartHash(hash, mobileno string) bool{
+  var item []Items
+  inserr := r.DB("mithun").Table("cartHash").Insert(cartResponse{
+    Hash : hash,
+    Mobileno : mobileno,
+    Items : item,
+    Coupons : "",
+    BagTotal: 0,
+    CreditsApplied :0,
+    EstimatedVAT : 0,
+    CouponDiscount : 0,
+    DeliveryCharges : 0,
+    OrderTotal : 0,
+  }).Exec(session)
+  checkErr(inserr)
+  return true
+}
+func getCartHash(mobileno string) string{
+  var cart_response cartResponse
+  curr, _ := r.DB("mithun").Table("cartHash").Filter(map[string]interface{}{
+    "mobileno": mobileno,
+    }).Run(session)
+  curr.One(&cart_response)
+  curr.Close()
+  return cart_response.Hash
+}
+func getCartDetails(hash string) cartResponse{
+  var cart_response cartResponse
+  curr, _ := r.DB("mithun").Table("cartHash").Get(hash).Run(session)
+  curr.One(&cart_response)
+  curr.Close()
+  return cart_response
+}
+func addItemtoCart(hash string, item Items, price float64) int{
+  var count int
+  var cart_response cartResponse
+  curr, _ := r.DB("mithun").Table("cartHash").Get(hash).Run(session)
+  curr.One(&cart_response)
+  curr.Close()
+  cart_response.Items = append(cart_response.Items, item)
+  count = len(cart_response.Items)
+  cart_response.BagTotal = cart_response.BagTotal + price
+  cart_response.EstimatedVAT = cart_response.BagTotal * 14 / 100
+  cart_response.OrderTotal = cart_response.OrderTotal + cart_response.EstimatedVAT + price
+  r.DB("mithun").Table("cartHash").Get(hash).Update(cart_response).Exec(session)
+  return count
+}
+func applyCoupontoCart(hash, coupon string, mobile_device bool) bool{
+  var cart_response cartResponse
+  curr, _ := r.DB("mithun").Table("cartHash").Get(hash).Run(session)
+  curr.One(&cart_response)
+  curr.Close()
+  firstorder := isFirstOrder(cart_response.Mobileno)
+  valid, discount := checkCouponValidity(coupon, mobile_device, firstorder, cart_response.BagTotal)
+  if valid{
+    cart_response.Coupons = coupon
+    cart_response.CouponDiscount = discount
+    cart_response.EstimatedVAT = (cart_response.BagTotal - cart_response.CouponDiscount - cart_response.CreditsApplied) * 14 / 100
+    cart_response.OrderTotal = cart_response.EstimatedVAT + cart_response.BagTotal - cart_response.CouponDiscount - cart_response.CreditsApplied
+    r.DB("mithun").Table("cartHash").Get(hash).Update(cart_response).Exec(session)
+    return true
+  }
+  return false
+}
+func applyCreditstoCart(hash string) bool{
+  var cart_response cartResponse
+  curr, _ := r.DB("mithun").Table("cartHash").Get(hash).Run(session)
+  curr.One(&cart_response)
+  curr.Close()
+  if(cart_response.Mobileno == ""){
+    return false
+  }else{
+    wallet_id := getwalletIDFromMobile(cart_response.Mobileno)
+    _, _, _, credits := getWallet(wallet_id)
+    if(credits <= 0){
+      return false
+    }
+    cart_response.CreditsApplied = credits * 30 / 100
+    cart_response.EstimatedVAT = (cart_response.BagTotal - cart_response.CouponDiscount - cart_response.CreditsApplied) * 14 / 100
+    cart_response.OrderTotal = cart_response.EstimatedVAT + cart_response.BagTotal - cart_response.CouponDiscount - cart_response.CreditsApplied
+    r.DB("mithun").Table("cartHash").Get(hash).Update(cart_response).Exec(session)
+    useWallet(wallet_id, cart_response.CreditsApplied)
+    return true
+  }
 }
 func getDesignHash(hash string, choice , options_count int) (bool,bool){
   var key string
@@ -443,7 +559,7 @@ func updateHashTable(hash string, choice, option_key int)  {
     PocketLid: "801",
     BackDetails:"901",
     BottomCut: "1001",
-    TotalPrice: "700.00",
+    TotalPrice: 700.00,
     }
   var key string
   if(option_key >= 10){

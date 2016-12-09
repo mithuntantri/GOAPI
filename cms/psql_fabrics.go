@@ -46,6 +46,11 @@ func getAllFabrics() []Fabrics{
   }
   return Result
 }
+func getFabricPrice(fabric_id string) float64 {
+  var price float64
+  db.QueryRow("SELECT disc_rate from fabrics WHERE fabric_id=$1", fabric_id).Scan(&price)
+  return price
+}
 func getFilteredFabrics(brand, gender, category, quality, material string, apply_brand, apply_gender, apply_category, apply_quality, apply_material bool) []Fabrics{
   Result := make([]Fabrics, 0)
   number := 0

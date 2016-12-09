@@ -27,9 +27,10 @@ CREATE TABLE "clients" (
 
 CREATE TABLE "wallet" (
 	"wallet_id" varchar(20) NOT NULL,
-	"referral_credits" int NOT NULL,
-	"profile_credits" int NOT NULL,
-	"promo_credits" int NOT NULL,
+	"referral_credits" float4 NOT NULL,
+	"profile_credits" float4 NOT NULL,
+	"promo_credits" float4 NOT NULL,
+	"total_credits" float4 NOT NULL,
 	CONSTRAINT wallet_pk PRIMARY KEY ("wallet_id")
 ) WITH (
   OIDS=FALSE

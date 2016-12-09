@@ -33,7 +33,7 @@ func getProfileHandler(c *gin.Context)  {
       })
     }else{
       response, referral_id, wallet_id := getProfile(request.Mobileno)
-      referral_credits, profile_credits, promo_credits := getWallet(wallet_id)
+      referral_credits, profile_credits, promo_credits,_ := getWallet(wallet_id)
       if response.Mobileno == "" {
         mobileno := getMobileNumberFromEmail(request.Mobileno)
         fmt.Println("Fetching mobileno", mobileno)
@@ -45,7 +45,7 @@ func getProfileHandler(c *gin.Context)  {
           return
         }else{
           response, referral_id, wallet_id = getProfile(mobileno)
-          referral_credits, profile_credits, promo_credits = getWallet(wallet_id)
+          referral_credits, profile_credits, promo_credits,_ = getWallet(wallet_id)
         }
       }
       c.JSON(200, gin.H{

@@ -31,3 +31,8 @@ func getMobileNumber(id, table_name, field_name string) string{
   QuoteIdentifier(table_name),QuoteIdentifier(field_name)),id).Scan(&mobileno)
   return mobileno
 }
+func getwalletIDFromMobile(mobileno string) string{
+  var wallet_id string
+  db.QueryRow("SELECT wallet_id FROM profile WHERE mobileno=$1",mobileno).Scan(&wallet_id)
+  return wallet_id
+}
