@@ -89,7 +89,17 @@ CREATE TABLE "options" (
   OIDS=FALSE
 );
 
-
+CREATE TABLE "blouse" (
+	"option_key" varchar(5) NOT NULL,
+	"option_name" varchar(30) NOT NULL,
+	"option_category" varchar(30) NOT NULL,
+	"option_type" varchar(30) NOT NULL,
+	"img" varchar(127) NOT NULL,
+	"price" float4 NOT NULL,
+	CONSTRAINT blouse_pk PRIMARY KEY ("option_key")
+) WITH (
+	OIDS=FALSE
+);
 
 CREATE TABLE "orders" (
 	"order_id" varchar(30) NOT NULL,
