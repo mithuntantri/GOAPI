@@ -56,6 +56,11 @@ func main()  {
     router.GET("/api/product/options", getOptionsHandler)
     router.POST("/api/product/options", setValueHandler)
 
+    router.GET("/api/blouse/categories", getBlouseCategoriesHandler)
+    router.GET("/api/blouse/init", initBlouseHandler)
+    router.GET("/api/blouse/options", getBlouseOptionsHandler)
+    router.POST("/api/blouse/options", setBlouseValueHandler)
+
     router.POST("/api/cart", addtoCartHandler)
     router.GET("/api/cart", getCartHandler)
 

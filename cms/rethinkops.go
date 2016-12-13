@@ -65,6 +65,29 @@ type newCartHash struct{
   FabricIds string `gorethink:"fabric_ids"`
   DesignHashs string `gorethink:"design_hashs"`
 }
+type newBlouseHash struct{
+  Hash string `gorethink:"id"`
+  Mobileno string `gorethink:"mobileno"`
+  CheckedOut bool `gorethink:"checked_out"`
+  NeckType string `gorethink:"neck_type"`
+  Front string `gorethink:"front"`
+  Back string `gorethink:"back"`
+  Sleeves string `gorethink:"sleeves"`
+  BlouseLength string `gorethink:"blouse_length"`
+  Opening string `gorethink:"opening"`
+  Cut string `gorethink:"cut"`
+  Border string `gorethink:"border"`
+  BorderPlacement string `gorethink:"border_placemnt"`
+  BorderType string `gorethink:"border_type"`
+  Piping string `gorethink:"piping"`
+  PipingColor string `gorethink:"piping_color"`
+  Dori string `gorethink:"dori"`
+  BlousePads string `gorethink:"blouse_pads"`
+  DisableList string `gorethink:"disable_list"`
+  TotalPrice float64 `gorethink:"total_price"`
+  VerifiedUser bool `gorethink:"verified_user"`
+  Favorites bool `gorethink:"favorites"`
+}
 func connectDB()  {
   var err error
   session, err = r.Connect(r.ConnectOpts{
@@ -88,6 +111,7 @@ func createDB()  {
   createSalttable()
   createDesignHashTable()
   createCartHashTable()
+  createBlouseHashTable()
 }
 func createRegistrationstable() {
   fmt.Println("Creating the newRegistrations table")
@@ -124,6 +148,23 @@ func createCartHashTable() {
     r.DB("mithun").TableCreate("cartHash"),
   ).Run(session)
   checkErr(err)
+}
+func createBlouseHashTable(){
+  fmt.Println("Creating the blouse HashTable table")
+  _, err := r.Branch(
+    r.DB("mithun").TableList().Contains("blouseHash"),
+    nil,
+    r.DB("mithun").TableCreate("blouseHash"),
+    ).Run(session)
+    checkErr(err)
+  }
+func checkBlouseHashExists(hash string) bool{
+  fmt.Println("Checking if blouse hash already exists")
+  result, _ := r.DB("mithun").Table("blouseHash").Get(hash).Run(session)
+  if result.IsNil(){
+    return false
+  }
+  return true
 }
 func checkCartHashExists(hash string) bool{
   fmt.Println("Checking if cart hash already exists")
@@ -380,13 +421,97 @@ func insertNewHash(hash, mobileno string)  bool{
     PocketLid:"801",
     BackDetails:"901",
     BottomCut: "1001",
-    TotalPrice: 700.00,
+    TotalPrice: 699.00,
     VerifiedUser : VerifiedUser,
     Mobileno : mobileno,
     Favorites : false,
     }).Exec(session)
   checkErr(inserr)
   return true
+}
+func insertNewBlouseHash(hash, mobileno, neck_type string) bool{
+  VerifiedUser := true
+  if mobileno == ""{
+    VerifiedUser = false
+  }
+  var disable_list string
+
+  front, list1 := getBlouseOptionKey("Front", neck_type)
+  back, list2 := getBlouseOptionKey("Back", neck_type)
+  sleeves, list3 := getBlouseOptionKey("Sleeves", "all")
+  blouselength, list4 := getBlouseOptionKey("Blouse Length", "all")
+  opening, list5 := getBlouseOptionKey("Opening", "all")
+  cut, list6 := getBlouseOptionKey("Cut", "all")
+  border, list7 := getBlouseOptionKey("Border", "add-on")
+  border_placemnt, list8 := getBlouseOptionKey("Border Placement", "add-on")
+  border_type, list9 := getBlouseOptionKey("Border Type", "add-on")
+  piping, list10 := getBlouseOptionKey("Piping", "add-on")
+  piping_color, list11 := getBlouseOptionKey("Piping Color", "add-on")
+  dori, list12 := getBlouseOptionKey("Dori", "add-on")
+  blouse_pads, list13 := getBlouseOptionKey("Blouse Pads", "add-on")
+
+  disable_list = disable_list + "," + list1 + "," + list2 + "," + list3 + "," + list4 + "," + list5 + "," + list6 + "," + list7 + "," + list8 + "," + list9 + "," + list10 + "," + list11 + "," + list12 + "," + list13
+  inserr := r.DB("mithun").Table("blouseHash").Insert(newBlouseHash{
+    Hash : hash,
+    CheckedOut: false,
+    NeckType : neck_type,
+    Front : front,
+    Back : back,
+    Sleeves : sleeves,
+    BlouseLength : blouselength,
+    Opening :  opening,
+    Cut: cut,
+    Border : border,
+    BorderPlacement: border_placemnt,
+    BorderType: border_type,
+    Piping  : piping,
+    PipingColor : piping_color,
+    Dori: dori,
+    BlousePads : blouse_pads,
+    TotalPrice: 699.00,
+    VerifiedUser : VerifiedUser,
+    Mobileno : mobileno,
+    Favorites : false,
+    DisableList : disable_list,
+    }).Exec(session)
+  checkErr(inserr)
+  return true
+}
+func getNewBlouseHash(hash string) initBlouseData{
+  var initdata initBlouseData
+  var blousehash newBlouseHash
+  curr, _ := r.DB("mithun").Table("blouseHash").Get(hash).Run(session)
+  curr.One(&blousehash)
+  curr.Close()
+  initdata.Hash = hash
+  initdata.TotalPrice = blousehash.TotalPrice
+  initdata.Favorites = blousehash.Favorites
+  initdata.Gender = "F"
+  initdata.CheckedOut = blousehash.CheckedOut
+  initdata.Front = fetchBlouseOptionsFromKey(hash, blousehash.Front,"Front", blousehash.NeckType)
+  initdata.Back = fetchBlouseOptionsFromKey(hash, blousehash.Back, "Back", blousehash.NeckType)
+  initdata.Sleeves = fetchBlouseOptionsFromKey(hash, blousehash.Sleeves, "Sleeves", "all")
+  initdata.BlouseLength = fetchBlouseOptionsFromKey(hash, blousehash.BlouseLength, "Blouse Length", "all")
+  initdata.Opening = fetchBlouseOptionsFromKey(hash, blousehash.Opening, "Opening", "all")
+  initdata.Cut = fetchBlouseOptionsFromKey(hash, blousehash.Cut, "Cut", "all")
+  initdata.AddOn = make([]AddOns,0)
+  var addon AddOns
+  addon.Border = fetchBlouseOptionsFromKey(hash, blousehash.Border, "Border", "add-on")
+  addon.BorderPlacement = fetchBlouseOptionsFromKey(hash, blousehash.BorderPlacement, "Border Placement", "add-on")
+  addon.BorderTypes = fetchBlouseOptionsFromKey(hash, blousehash.BorderType, "Border Type", "add-on")
+  addon.Piping = fetchBlouseOptionsFromKey(hash, blousehash.Piping, "Piping", "add-on")
+  addon.PipingColor = fetchBlouseOptionsFromKey(hash, blousehash.PipingColor, "Piping Color", "add-on")
+  addon.Dori = fetchBlouseOptionsFromKey(hash, blousehash.Dori, "Dori", "add-on")
+  addon.BlousePads = fetchBlouseOptionsFromKey(hash, blousehash.BlousePads, "Blouse Pads", "add-on")
+  initdata.AddOn = append(initdata.AddOn, addon)
+  return initdata
+}
+func getDisableList(hash string) string{
+  var blousehash newBlouseHash
+  curr, _ := r.DB("mithun").Table("blouseHash").Get(hash).Run(session)
+  curr.One(&blousehash)
+  curr.Close()
+  return blousehash.DisableList
 }
 func getDesignPrice(hash string) float64{
   var design newDesignHash
@@ -543,6 +668,23 @@ func removefromFav(hash string) bool{
   r.DB("mithun").Table("designHash").Get(hash).Update(map[string]interface{}{
     "favorites" : false,
   }).Exec(session)
+  return true
+}
+func updateBlouseHashTable(hash , option_name, option_category, option_type string) bool{
+  key := getBlouseOptionKeyFromName(option_name, option_category, option_type)
+  var blouseHash newBlouseHash
+  curr, _ := r.DB("mithun").Table("blouseHash").Get(hash).Run(session)
+  curr.One(&blouseHash)
+  curr.Close()
+  switch option_category{
+    case "Front" : blouseHash.Front = key
+    case "Back" : blouseHash.Back = key
+    case "Sleeves" : blouseHash.Sleeves = key
+    case "Blouse Length" : blouseHash.BlouseLength = key
+    case "Opening" : blouseHash.Opening = key
+    case "Cut" : blouseHash.Cut = key
+  }
+  r.DB("mithun").Table("blouseHash").Get(hash).Update(blouseHash).Exec(session)
   return true
 }
 func updateHashTable(hash string, choice, option_key int)  {

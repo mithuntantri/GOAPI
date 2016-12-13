@@ -96,6 +96,7 @@ CREATE TABLE "blouse" (
 	"option_type" varchar(30) NOT NULL,
 	"img" varchar(127) NOT NULL,
 	"price" float4 NOT NULL,
+	"disable_list" varchar(256) NOT NULL,
 	CONSTRAINT blouse_pk PRIMARY KEY ("option_key")
 ) WITH (
 	OIDS=FALSE

@@ -1,7 +1,6 @@
 package main
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
 )
 type blouseOptions struct{
@@ -12,10 +11,20 @@ type blouseOptions struct{
     Enabled bool `json:"enabled"`
     Selected bool `json:"selected"`
     Price string `json:"price"`
+    DisableList string `json:"disable_list"`
+}
+type AddOns struct{
+  Border []blouseOptions `json:"border"`
+  BorderPlacement []blouseOptions `json:"border_placement"`
+  BorderTypes []blouseOptions `json:"border_types"`
+  Piping []blouseOptions `json:"piping"`
+  PipingColor []blouseOptions `json:"piping_color"`
+  Dori []blouseOptions `json:"dori"`
+  BlousePads []blouseOptions `json:"blouse_pads"`
 }
 type initBlouseData struct{
   Hash string `json:"hash"`
-  TotalPrice string `json:"total_price"`
+  TotalPrice float64 `json:"total_price"`
   Favorites bool `json:"favorites"`
   Gender string `json:"gender"`
   CheckedOut bool `json:"cheked_out"`
@@ -25,38 +34,42 @@ type initBlouseData struct{
   BlouseLength []blouseOptions `json:"blouse_length"`
   Opening []blouseOptions `json:"opening"`
   Cut []blouseOptions `json:"cut"`
+  AddOn []AddOns `json:"add-ons"`
 }
 func initBlouseHandler(c *gin.Context)  {
   var request struct{
     Mobileno string `form:"mobileno"`
-    NeckType string `form:"neck_type"`
+    NeckType string `form:"neck_type" binding:"required"`
   }
   if c.Bind(&request) == nil{
-    if request.NeckType == ""{
-      var response []blouseOptions
-      response = fetchBlouseOptions("Neck Type", "all")
-      c.JSON(200, gin.H{
-        "status" : "success",
-        "data" : response,
-      })
-    }else{
-      var initdata initBlouseData
-      initdata.Hash, _ = Generate(`[a-Z]{20}`)
-      initdata.TotalPrice = "699.00"
-      initdata.Favorites = false
-      initdata.Gender = "F"
-      initdata.CheckedOut = false
-      initData.Front = fetchBlouseOptions("Front", request.NeckType)
-      initData.Back = fetchBlouseOptions("Back", request.NeckType)
-      initData.Sleeves = fetchBlouseOptions("Sleeves", "all")
-      initData.BlouseLength = fetchBlouseOptions("Blouse Length", "all")
-      initData.Opening = fetchBlouseOptions("Opening", "all")
-      initData.Cut = fetchBlouseOptions("Cut", "all")
-      insertNewBlouseHash(initData.Hash, request.Mobileno, request.NeckType)
-      c.JSON(200, gin.H{
-        "status": "success",
-        "data": initdata,
-      })
-    }
+    var initdata initBlouseData
+    initdata.Hash, _ = Generate(`[a-Z]{20}`)
+    insertNewBlouseHash(initdata.Hash, request.Mobileno, request.NeckType)
+    initdata.TotalPrice = 699.00
+    initdata.Favorites = false
+    initdata.Gender = "F"
+    initdata.CheckedOut = false
+    initdata.Front = fetchBlouseOptions(initdata.Hash, "Front", request.NeckType)
+    initdata.Back = fetchBlouseOptions(initdata.Hash, "Back", request.NeckType)
+    initdata.Sleeves = fetchBlouseOptions(initdata.Hash, "Sleeves", "all")
+    initdata.BlouseLength = fetchBlouseOptions(initdata.Hash, "Blouse Length", "all")
+    initdata.Opening = fetchBlouseOptions(initdata.Hash, "Opening", "all")
+    initdata.Cut = fetchBlouseOptions(initdata.Hash, "Cut", "all")
+    initdata.AddOn = make([]AddOns,0)
+
+    var addon AddOns
+    addon.Border = fetchBlouseOptions(initdata.Hash, "Border", "add-on")
+    addon.BorderPlacement = fetchBlouseOptions(initdata.Hash, "Border Placement", "add-on")
+    addon.BorderTypes = fetchBlouseOptions(initdata.Hash, "Border Types", "add-on")
+    addon.Piping = fetchBlouseOptions(initdata.Hash, "Piping", "add-on")
+    addon.PipingColor = fetchBlouseOptions(initdata.Hash, "Piping Color", "add-on")
+    addon.Dori = fetchBlouseOptions(initdata.Hash, "Dori", "add-on")
+    addon.BlousePads = fetchBlouseOptions(initdata.Hash, "Blouse Pads", "add-on")
+    initdata.AddOn = append(initdata.AddOn, addon)
+
+    c.JSON(200, gin.H{
+      "status": "success",
+      "data": initdata,
+    })
   }
 }
