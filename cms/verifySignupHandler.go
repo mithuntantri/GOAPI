@@ -71,7 +71,7 @@ func verifySignupHandler(c *gin.Context)  {
               insertFbIDMap(request.Mobileno, FBID)
             }
             createProfile(profileRequest, referralID, walletID, ReferredID)
-            sendEmailVerification(request.Mobileno, ClientID, EmailID)
+            go sendEmailVerification(request.Mobileno, ClientID, EmailID)
             c.JSON(200, gin.H{
               "status":"success",
               "message":"",

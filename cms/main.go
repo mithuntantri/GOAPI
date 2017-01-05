@@ -22,8 +22,6 @@ func main()  {
     router.GET("/api/resendemail", resendEmailVerificationHandler)
 
     router.POST("/api/login", loginHandler)
-    router.POST("/api/admin/login", adminLoginHandler)
-    router.POST("/api/admin/logout", adminLogoutHandler)
     router.DELETE("/api/logout", logoutHandler)
 
     router.GET("/api/facebook", facebookHandler)
