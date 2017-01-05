@@ -2,6 +2,7 @@ package main
 
 import (
   "fmt"
+  "crypto/tls"
   "gopkg.in/gomail.v2"
 )
 func sendOtpThroughMail(email_id, otp string)  {
@@ -26,6 +27,7 @@ func sendOtpThroughMail(email_id, otp string)  {
     <div><b>Team Zigfo</b></div></div>
   `)
   d := gomail.NewPlainDialer("smtp.zoho.com", 587, "noreply@zigfo.com", "password123")
+  d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
     if err := d.DialAndSend(mail); err != nil {
         panic(err)
     }

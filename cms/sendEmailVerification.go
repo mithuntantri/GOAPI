@@ -4,6 +4,7 @@ import (
   "time"
   "fmt"
   "log"
+  "crypto/tls"
   "gopkg.in/gomail.v2"
   "github.com/dgrijalva/jwt-go"
 )
@@ -63,6 +64,7 @@ func sendEmailVerification(mobileno, client_id, email_id string)  {
     <div><b>Team Zigfo</b></div></div>
   `)
   d := gomail.NewPlainDialer("smtp.zoho.com", 587, "noreply@zigfo.com", "password123")
+  d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
     if err := d.DialAndSend(mail); err != nil {
         panic(err)
     }

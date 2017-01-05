@@ -41,10 +41,10 @@ func loginHandler(c *gin.Context)  {
           isFblogin := checkIfFBID(request.ID)
           if !isFblogin && !request.FBLogin {
             c.JSON(200, gin.H{
-              "status" : "success",
-              "message" : "",
+              "status" : "failed",
+              "message" : "Credentials does not exist",
               "data":map[string]interface{}{
-                "valid" : false,
+                "validUser" : false,
               },
             })
             return

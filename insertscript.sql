@@ -8,12 +8,12 @@ INSERT INTO coupons (coupon_id,description,expiry,only_new,only_first,only_app, 
 INSERT INTO coupons (coupon_id,description,expiry,only_new,only_first,only_app, min_amount, discount) VALUES ('SUPERZIG','FLAT 10% OFF on orders more than RS. 300',1477898999,true,false,false, 300, 10);
 INSERT INTO coupons (coupon_id,description,expiry,only_new,only_first,only_app, min_amount, discount) VALUES ('APP10','FLAT 10% OFF on all orders using app',1477898999,true,false,true, 300, 10);
 
-INSERT INTO slots (slot_id, slot_name) VALUES ('slot1', '9:00 AM to 11:00 AM');
-INSERT INTO slots (slot_id, slot_name) VALUES ('slot2', '11:00 AM to 1:00 PM');
-INSERT INTO slots (slot_id, slot_name) VALUES ('slot3', '1:00 PM to 3:00 PM');
-INSERT INTO slots (slot_id, slot_name) VALUES ('slot4', '3:00 PM to 5:00 PM');
-INSERT INTO slots (slot_id, slot_name) VALUES ('slot5', '5:00 PM to 7:00 PM');
-INSERT INTO slots (slot_id, slot_name) VALUES ('slot6', '7:00 PM to 9:00 PM');
+-- INSERT INTO slots (slot_id, slot_name) VALUES ('slot1', '9:00 AM to 11:00 AM');
+-- INSERT INTO slots (slot_id, slot_name) VALUES ('slot2', '11:00 AM to 1:00 PM');
+-- INSERT INTO slots (slot_id, slot_name) VALUES ('slot3', '1:00 PM to 3:00 PM');
+-- INSERT INTO slots (slot_id, slot_name) VALUES ('slot4', '3:00 PM to 5:00 PM');
+-- INSERT INTO slots (slot_id, slot_name) VALUES ('slot5', '5:00 PM to 7:00 PM');
+-- INSERT INTO slots (slot_id, slot_name) VALUES ('slot6', '7:00 PM to 9:00 PM');
 
 INSERT INTO fabrics (fabric_id, brand, gender, category, material, quality, img1, img2, quantity, rate, disc_rate, title, description) VALUES ('f01', 'Calvin Klein', 'M', 'Shirts','Cotton', '1', '/img/fabrics/f101.jpg', '/img/fabrics/f102.jpg', 100, 899, 849, 'White & Black Clothing Fabric','A textured woven, usually printed cotton fabric that was popular in the 30s-40s and 50s as an interiors fabric. The prints were often large vines, leaves and florals.');
 INSERT INTO fabrics (fabric_id, brand, gender, category, material, quality, img1, img2, quantity, rate, disc_rate, title, description) VALUES ('f02', 'Vimal', 'M', 'Suits','Woollen', '3', '/img/fabrics/f201.jpg', '/img/fabrics/f202.jpg', 100, 3999, 3799, 'Grey Woollen Suit Clothin Fabric','A textured woven, usually printed cotton fabric that was popular in the 30s-40s and 50s as an interiors fabric. The prints were often large vines, leaves and florals.');
