@@ -28,7 +28,7 @@ func getMeasurementsHandler(c *gin.Context)  {
   }
   if c.Bind(&request) == nil{
     tokenString := c.Request.Header.Get("X-Authorization-Token")
-    device := c.Request.Header.Get("Device")
+    device := c.Request.Header.Get("X-Device-Type")
     mobile_device := false
     if device == "mobile"{
       mobile_device = true

@@ -9,7 +9,7 @@ func applyCouponsHandler(c *gin.Context)  {
     Coupon string `json:"coupon"`
   }
   if c.Bind(&request) == nil{
-    device := c.Request.Header.Get("Device")
+    device := c.Request.Header.Get("X-Device-Type")
     mobile_device := false
     if device == "mobile"{
       mobile_device = true

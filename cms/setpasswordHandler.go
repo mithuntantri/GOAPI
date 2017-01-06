@@ -11,7 +11,7 @@ func setpaswordHandler(c *gin.Context)  {
     Password string `json:"password"`
   }
   if c.Bind(&request) == nil {
-    device := c.Request.Header.Get("Device")
+    device := c.Request.Header.Get("X-Device-Type")
     mobile_device := false
     if device == "mobile"{
       mobile_device = true

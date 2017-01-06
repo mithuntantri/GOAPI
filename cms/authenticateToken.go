@@ -32,7 +32,9 @@ func deleteauthToken(tokenString string, mobile_device bool) string{
    }
    return mySigningKey, nil
   })
-  checkErr(err)
+  if(err != nil){
+    return err.Error()
+  }
   if claims, ok := vertoken.Claims.(jwt.MapClaims); ok && vertoken.Valid {
     id := claims["id"].(string)
     client_id := claims["client_id"].(string)
